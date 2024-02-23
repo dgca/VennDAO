@@ -1,4 +1,3 @@
-import "ui-utils/styles/global.css";
 export * from "./components/shadcnui/button";
 export * from "./components/shadcnui/card";
 export * from "./components/shadcnui/dropdown-menu";
