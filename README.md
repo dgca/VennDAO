@@ -1,13 +1,6 @@
-# (WIP) web3-starter-kit
+# VennDAO
 
-Current status: This is what I'm git cloning to start a new web3 project.
-
-Future status: This is an npx tool that bootstraps a web3 project with a React front-end, choice of CSS framework, choice of solidity framework, and includes a contract debugging tool.
-
-## Requirements
-
-- Node 18
-- NPM
+A network of IRL vendors providing services to web3.
 
 ## Getting started
 
