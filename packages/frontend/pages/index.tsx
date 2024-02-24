@@ -1,42 +1,33 @@
-import type { NextPage } from "next";
-import Head from "next/head";
+import { useRouter } from "next/router";
 
-import { Text } from "ui-kit";
+import { Button, Text } from "ui-kit";
 
 import { MainLayout } from "@/components/Layouts/MainLayout";
 
-const Home: NextPage = () => {
+export default function Home() {
+  const router = useRouter();
   return (
-    <>
-      <Head>
-        <title>Web3 Starter Kit</title>
-        <meta
-          name="description"
-          content="A starter kit for building web3 applications with RainbowKit, wagmi, and Next.js"
-        />
-        <link href="/favicon.ico" rel="icon" />
-      </Head>
+    <MainLayout>
+      <div className="container px-4 py-12 max-w-4xl mx-auto">
+        <Text.H1 className="leading-relaxed">
+          Connecting vendors of physical goods to the web3 ecosystem.
+        </Text.H1>
 
-      <MainLayout>
-        <div className="container px-4 py-12 mx-auto">
-          <Text.H1>Hello web3!</Text.H1>
+        <Text.P>
+          Vendors, join the DAO, add your products and services, and start
+          accepting orders from the web3 world.
+        </Text.P>
 
-          <Text.P>
-            This is a starter kit for building web3 frontends with the following
-            technologies:
-          </Text.P>
-
-          <ul className="list-disc list-inside mt-4">
-            <li>Next.js</li>
-            <li>RainbowKit</li>
-            <li>wagmi</li>
-            <li>Tailwind</li>
-            <li>shadcn/ui</li>
-          </ul>
+        <div className="flex justify-center mt-8">
+          <Button
+            onClick={() => {
+              router.push("/join");
+            }}
+          >
+            Join the DAO
+          </Button>
         </div>
-      </MainLayout>
-    </>
+      </div>
+    </MainLayout>
   );
-};
-
-export default Home;
+}

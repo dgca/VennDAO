@@ -1,18 +1,14 @@
 import "@rainbow-me/rainbowkit/styles.css";
-import "ui-kit/dist/index.css";
+import "ui-utils/dist/index.css";
 import "../styles/globals.css";
-import { RainbowKitProvider, getDefaultConfig } from "@rainbow-me/rainbowkit";
+import { RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { AppProps } from "next/app";
 import { WagmiProvider } from "wagmi";
 
 import { ErrorBoundary } from "../components/ErrorBoundary/ErrorBoundary";
 import { ThemeProvider } from "../components/ThemeProvider/ThemeProvider";
-import {
-  ChainConfig,
-  useChainsAndTransports,
-  useWeb3Config,
-} from "../lib/web3config";
+import { ChainConfig, useWeb3Config } from "../lib/web3config";
 
 type Props = AppProps & {
   walletConnectId: string;

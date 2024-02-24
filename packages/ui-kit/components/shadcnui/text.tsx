@@ -36,7 +36,7 @@ function H2({
   return (
     <Component
       className={cn(
-        "scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0",
+        "scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0",
         className,
       )}
     >
@@ -76,6 +76,16 @@ function H4({
     >
       {children}
     </Component>
+  );
+}
+
+function Plain({
+  as: Component = "span",
+  children,
+  className,
+}: PolymorphicComponentProps) {
+  return (
+    <Component className={cn("leading-7", className)}>{children}</Component>
   );
 }
 
@@ -184,6 +194,7 @@ export const Text = {
   H3,
   H4,
   P,
+  Plain,
   Blockquote,
   List,
   Code,

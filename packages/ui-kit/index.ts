@@ -1,3 +1,4 @@
+import "ui-utils/styles/global.css";
 export * from "./components/shadcnui/button";
 export * from "./components/shadcnui/card";
 export * from "./components/shadcnui/dropdown-menu";
@@ -7,3 +8,5 @@ export * from "./components/shadcnui/text";
 export * from "./components/shadcnui/switch";
 export * from "./components/shadcnui/textarea";
 export * from "./components/shadcnui/radio-group";
+export * from "./components/shadcnui/field";
+export * from "./components/shadcnui/form";
