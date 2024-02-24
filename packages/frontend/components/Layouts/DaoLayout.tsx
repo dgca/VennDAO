@@ -66,7 +66,7 @@ export function DaoLayout({ children }: { children: ReactNode }) {
         <aside className="p-4 lg:w-80 lg:border-r">
           <SidebarNav items={sidebarNavItems} />
         </aside>
-        <div className="container py-4 max-w-6xl mx-auto">{children}</div>
+        <div className="container px-4 py-12 max-w-6xl mx-auto">{children}</div>
       </div>
     </MainLayout>
   );
