@@ -52,12 +52,12 @@ contract VennDAOOrders is Ownable {
     event OrderStatusUpdated(uint256 indexed orderId, Status indexed newStatus);
 
     constructor(
-        address _initialOwner,
-        address _productsContract,
-        address _vendorsContract
+        IVennDAOProducts _productsContract,
+        IVennDAOVendors _vendorsContract,
+        address _initialOwner
     ) Ownable(_initialOwner) {
-        productsContract = IVennDAOProducts(_productsContract);
-        vendorsContract = IVennDAOVendors(_vendorsContract);
+        productsContract = _productsContract;
+        vendorsContract = _vendorsContract;
         daoFee = 20_000; // 2% initial fee
     }
 

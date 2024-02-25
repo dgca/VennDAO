@@ -6,7 +6,7 @@ VennDAO is a network of vendors that provide products and services to other web3
 
 What is a vendor? What is a product or service? Let's use some examples to illustrate:
 
-- Alice owns a print shop where she makes custom prints of any design a client provides. She joins VennDAO, adds her print service, and now a new NFT project can submit orders to send their NFT holders a physical print of their NFT.
+- Alice owns a print shop where she makes custom prints of any design a client provides. She joins VennDAO, adds her print service, and now a new NFT project can send their NFT holders a physical print of their NFT.
 - Bob has a company that plants trees to offset carbon emissions. He joins VennDAO, lists his service, and now an environmentally conscious DAO can subimt a proposal to plant 100 trees.
 - Carol is...you? What would you like to offer onchain? Join the DAO and get a whole new revenue stream.
 

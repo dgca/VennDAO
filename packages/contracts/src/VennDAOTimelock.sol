@@ -6,8 +6,9 @@ import "@openzeppelin/contracts/governance/TimelockController.sol";
 
 contract VennDAOTimelock is TimelockController {
     constructor(
-        uint256 minDelay,
-        address[] memory proposers,
-        address[] memory executors
-    ) TimelockController(minDelay, proposers, executors, address(0)) {}
+        uint256 _minDelay,
+        address[] memory _proposers,
+        address[] memory _executors,
+        address _tempAdmin
+    ) TimelockController(_minDelay, _proposers, _executors, _tempAdmin) {}
 }

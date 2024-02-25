@@ -8,6 +8,7 @@ import "@openzeppelin/contracts/utils/Base64.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "./IVennDAOProducts.sol";
 
+// @todo: Upgradable contract
 contract VennDAOProducts is Ownable, IVennDAOProducts {
     using Strings for uint256;
 
@@ -16,10 +17,10 @@ contract VennDAOProducts is Ownable, IVennDAOProducts {
     IERC721 private vendorsContract;
 
     constructor(
-        address _initialOwner,
-        address _vendorsContract
+        IERC721 _vendorsContract,
+        address _initialOwner
     ) Ownable(_initialOwner) {
-        vendorsContract = IERC721(_vendorsContract);
+        vendorsContract = _vendorsContract;
     }
 
     function getProductById(

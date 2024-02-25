@@ -30,10 +30,10 @@ contract VennDAOVendors is
 
     constructor(
         address _initialOwner,
-        address _usdcContract
+        IERC20 _usdcContract
     ) ERC721("VennDAO", "VNDAO") Ownable(_initialOwner) EIP712("VennDAO", "1") {
         membershipFee = 50 * 10 ** 6; // 50 USDC
-        usdcContract = IERC20(_usdcContract);
+        usdcContract = _usdcContract;
     }
 
     /**
