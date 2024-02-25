@@ -8,11 +8,17 @@ struct VendorMetadata {
     string name;
     string description;
     string website;
-    uint128 revenue;
+    uint256 revenue;
 }
 
 interface IVennDAOVendors is IERC721 {
     function membershipFee() external view returns (uint256);
 
     function usdcContract() external view returns (IERC20);
+
+    function treasuryAddress() external view returns (address);
+
+    function increaseVendorRevenue(uint256 _tokenId, uint256 _amount) external;
+
+    function decreaseVendorRevenue(uint256 _tokenId, uint256 _amount) external;
 }

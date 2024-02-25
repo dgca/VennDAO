@@ -11,6 +11,8 @@ import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/utils/Base64.sol";
 import "./IVennDAOVendors.sol";
 
+error OnlyOrdersContract();
+
 contract VennDAOVendors is
     IVennDAOVendors,
     ERC721,
@@ -22,6 +24,8 @@ contract VennDAOVendors is
 
     uint256 public membershipFee;
     IERC20 public usdcContract;
+    address public treasuryAddress;
+    address public ordersAddress;
 
     uint256 private nextTokenId;
     /** Revenue (USDC) a vendor must meet in order to vote */
@@ -30,34 +34,28 @@ contract VennDAOVendors is
 
     constructor(
         address _initialOwner,
-        IERC20 _usdcContract
+        IERC20 _usdcContract,
+        address _treasuryAddress
     ) ERC721("VennDAO", "VNDAO") Ownable(_initialOwner) EIP712("VennDAO", "1") {
         membershipFee = 50 * 10 ** 6; // 50 USDC
         usdcContract = _usdcContract;
+        treasuryAddress = _treasuryAddress;
     }
 
     /**
-     * Returns whether or not a token has met the revenue threshold to vote
-     * @param _tokenId Token ID to check
+     * Allows members to join by creating a vendor NFT
+     * @param _name Vendor name
+     * @param _description Vendor description
+     * @param _website URL to vendor's website
      */
-    function isVoteEligible(uint256 _tokenId) public view returns (bool) {
-        return metadataByTokenId[_tokenId].revenue > voterRevenueThreshold;
-    }
-
-    /**
-     * Allows governance to burn a vendor token
-     * @param tokenId Token ID to burn
-     */
-    function burn(uint256 tokenId) public onlyOwner {
-        _update(address(0), tokenId, _msgSender());
-    }
-
-    function safeMint(
+    function joinDAO(
         string memory _name,
         string memory _description,
         string memory _website
-    ) public onlyOwner {
+    ) public {
         uint256 tokenId = nextTokenId++;
+
+        usdcContract.transferFrom(msg.sender, treasuryAddress, membershipFee);
 
         _safeMint(msg.sender, tokenId);
 
@@ -71,6 +69,18 @@ contract VennDAOVendors is
         metadataByTokenId[tokenId] = metadata;
     }
 
+    function updateMembershipFee(uint256 _newFee) public onlyOwner {
+        membershipFee = _newFee;
+    }
+
+    /**
+     * Returns whether or not a token has met the revenue threshold to vote
+     * @param _tokenId Token ID to check
+     */
+    function isVoteEligible(uint256 _tokenId) public view returns (bool) {
+        return metadataByTokenId[_tokenId].revenue > voterRevenueThreshold;
+    }
+
     function tokenURI(
         uint256 tokenId
     ) public view override returns (string memory) {
@@ -80,6 +90,34 @@ contract VennDAOVendors is
                 metadataByTokenId[tokenId].description,
                 metadataByTokenId[tokenId].website
             );
+    }
+
+    function increaseVendorRevenue(uint256 _tokenId, uint256 _amount) public {
+        _assertOrdersContract();
+        metadataByTokenId[_tokenId].revenue += _amount;
+    }
+
+    function decreaseVendorRevenue(uint256 _tokenId, uint256 _amount) public {
+        _assertOrdersContract();
+        metadataByTokenId[_tokenId].revenue -= _amount;
+    }
+
+    function setOrdersAddress(address _ordersAddress) public onlyOwner {
+        ordersAddress = _ordersAddress;
+    }
+
+    function _assertOrdersContract() internal view {
+        if (msg.sender != ordersAddress) {
+            revert OnlyOrdersContract();
+        }
+    }
+
+    /**
+     * Allows governance to burn a vendor token
+     * @param tokenId Token ID to burn
+     */
+    function burn(uint256 tokenId) public onlyOwner {
+        _update(address(0), tokenId, _msgSender());
     }
 
     function _buildMetadata(

@@ -30,6 +30,7 @@ struct Order {
     address refundRecipient;
     uint256 orderTotal;
     Status status;
+    uint256 createdAt;
     bytes encryptedOrderFields;
 }
 
@@ -39,9 +40,11 @@ contract VennDAOOrders is Ownable {
     /** Amount permillion of order subtotal to be paid to the DAO. I.e. percentage with 6 decimal places. */
     uint256 public daoFee;
     Order[] public orders;
+    uint256 public orderAcceptanceWindow = 1 weeks;
 
     IVennDAOProducts private productsContract;
     IVennDAOVendors private vendorsContract;
+    bool private locked;
 
     event OrderPlaced(
         uint256 indexed orderId,
@@ -50,6 +53,25 @@ contract VennDAOOrders is Ownable {
         address indexed buyer
     );
     event OrderStatusUpdated(uint256 indexed orderId, Status indexed newStatus);
+    event DaoFeeUpdated(uint256 newFee);
+    event OrderFundsTransferred(
+        uint256 indexed orderId,
+        address indexed recipient,
+        uint256 amount,
+        uint256 daoAmount
+    );
+    event VendorRefundIssued(
+        uint256 indexed orderId,
+        address indexed vendor,
+        uint256 amount
+    );
+
+    modifier noReentrancy() {
+        require(!locked, "No reentrancy allowed!");
+        locked = true;
+        _;
+        locked = false;
+    }
 
     constructor(
         IVennDAOProducts _productsContract,
@@ -109,6 +131,7 @@ contract VennDAOOrders is Ownable {
                 refundRecipient: _refundRecipient,
                 orderTotal: orderTotal,
                 status: Status.Pending,
+                createdAt: block.timestamp,
                 encryptedOrderFields: _encryptedOrderFields
             })
         );
@@ -116,27 +139,103 @@ contract VennDAOOrders is Ownable {
         emit OrderPlaced(orderId, _productId, _quantity, msg.sender);
     }
 
-    function updateOrderStatus(uint256 _orderId, Status _newStatus) external {
+    function updateOrderStatus(
+        uint256 _orderId,
+        Status _newStatus
+    ) external noReentrancy {
         Order storage order = orders[_orderId];
 
         _assertVendor(
             productsContract.getProductById(order.productId).vendorTokenId
         );
 
-        if (order.status == Status.Fulfilled) {
-            revert InvalidOrderStatus("Order already fulfilled");
+        if (_newStatus == Status.Expired) {
+            revert InvalidOrderStatus("Cannot set status to Expired");
         }
 
-        if (order.status == Status.Cancelled) {
-            revert InvalidOrderStatus("Order already cancelled");
+        if (order.status != Status.Pending || order.status != Status.Accepted) {
+            revert InvalidOrderStatus("Order already reached terminal state");
         }
 
-        if (order.status == Status.Expired) {
-            revert InvalidOrderStatus("Order already expired");
+        uint256 daoAmount = order.orderTotal -
+            (order.quantity *
+                productsContract.getProductById(order.productId).price);
+        uint256 vendorAmount = order.orderTotal - daoAmount;
+
+        // If the order is pending and moving to accepted or fulfilled,
+        // we transfer funds to vendor and treasury
+        if (order.status == Status.Pending && _newStatus != Status.Cancelled) {
+            IERC20 usdcContract = vendorsContract.usdcContract();
+            usdcContract.transfer(msg.sender, vendorAmount);
+            usdcContract.transfer(vendorsContract.treasuryAddress(), daoAmount);
+
+            vendorsContract.increaseVendorRevenue(
+                productsContract.getProductById(order.productId).vendorTokenId,
+                vendorAmount
+            );
+
+            emit OrderFundsTransferred(
+                _orderId,
+                msg.sender,
+                vendorAmount,
+                daoAmount
+            );
+        }
+
+        // If the order is being cancelled, and the order is pending, we refund the buyer from escrow
+        if (order.status == Status.Pending && _newStatus == Status.Cancelled) {
+            IERC20 usdcContract = vendorsContract.usdcContract();
+            usdcContract.transfer(order.refundRecipient, order.orderTotal);
+        }
+
+        // If the order is being cancelled, and the order is accepted, the vendor must refund the buyer the order total
+        if (order.status == Status.Accepted && _newStatus == Status.Cancelled) {
+            IERC20 usdcContract = vendorsContract.usdcContract();
+            usdcContract.transferFrom(
+                msg.sender,
+                order.refundRecipient,
+                order.orderTotal
+            );
+            vendorsContract.decreaseVendorRevenue(
+                productsContract.getProductById(order.productId).vendorTokenId,
+                vendorAmount
+            );
+            emit VendorRefundIssued(_orderId, msg.sender, vendorAmount);
         }
 
         order.status = _newStatus;
+
         emit OrderStatusUpdated(_orderId, _newStatus);
+    }
+
+    function claimExpiredRefund(uint256 _orderId) external noReentrancy {
+        Order storage order = orders[_orderId];
+
+        if (order.status != Status.Pending) {
+            revert InvalidOrderStatus("Order not in a refundable state");
+        }
+
+        if (block.timestamp < order.createdAt + orderAcceptanceWindow) {
+            revert InvalidOrderStatus("Order not yet refundable");
+        }
+
+        if (msg.sender != order.refundRecipient) {
+            revert InvalidOrderStatus("Not the refund recipient");
+        }
+
+        order.status = Status.Expired;
+
+        vendorsContract.usdcContract().transfer(
+            order.refundRecipient,
+            order.orderTotal
+        );
+
+        emit OrderStatusUpdated(_orderId, Status.Expired);
+    }
+
+    function updateDaoFee(uint256 _newFee) external onlyOwner {
+        daoFee = _newFee;
+        emit DaoFeeUpdated(_newFee);
     }
 
     function _assertVendor(uint256 _vendorTokenId) internal view {

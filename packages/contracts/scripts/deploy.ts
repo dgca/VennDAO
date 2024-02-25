@@ -21,13 +21,16 @@ function getUSDCAddress() {
 async function deployVendors({
   initialOwner,
   usdcAddress,
+  treasuryAddress,
 }: {
   initialOwner: Address;
   usdcAddress: Address;
+  treasuryAddress: Address;
 }) {
   const vendors = await hre.viem.deployContract("VennDAOVendors", [
     initialOwner,
     usdcAddress,
+    treasuryAddress,
   ]);
   console.log(`Vendors deployed to ${vendors.address}`);
   return vendors;
@@ -62,14 +65,14 @@ async function deployGovernor({
 
 async function deployProducts({
   vendorsAddress,
-  timelockAddress,
+  ownerAddress,
 }: {
   vendorsAddress: Address;
-  timelockAddress: Address;
+  ownerAddress: Address;
 }) {
   const products = await hre.viem.deployContract("VennDAOProducts", [
     vendorsAddress,
-    timelockAddress,
+    ownerAddress,
   ]);
   console.log(`Products deployed to ${products.address}`);
   return products;
@@ -78,16 +81,16 @@ async function deployProducts({
 async function deployOrders({
   productsAddress,
   vendorsAddress,
-  timelockAddress,
+  ownerAddress,
 }: {
   productsAddress: Address;
   vendorsAddress: Address;
-  timelockAddress: Address;
+  ownerAddress: Address;
 }) {
   const orders = await hre.viem.deployContract("VennDAOOrders", [
     productsAddress,
     vendorsAddress,
-    timelockAddress,
+    ownerAddress,
   ]);
   console.log(`Orders deployed to ${orders.address}`);
   return orders;
@@ -99,12 +102,13 @@ async function main() {
 
   const usdcAddress = getUSDCAddress();
 
+  const timelockContract = await deployTimelock(deployerClient.account.address);
+
   const vendorsContract = await deployVendors({
     initialOwner: deployerClient.account.address,
     usdcAddress: usdcAddress,
+    treasuryAddress: timelockContract.address,
   });
-
-  const timelockContract = await deployTimelock(deployerClient.account.address);
 
   const governorContract = await deployGovernor({
     vendorsAddress: vendorsContract.address,
@@ -167,13 +171,27 @@ async function main() {
 
   const productsContract = await deployProducts({
     vendorsAddress: vendorsContract.address,
-    timelockAddress: timelockContract.address,
+    ownerAddress: timelockContract.address,
   });
 
   const ordersContract = await deployOrders({
     productsAddress: productsContract.address,
     vendorsAddress: vendorsContract.address,
-    timelockAddress: timelockContract.address,
+    ownerAddress: timelockContract.address,
+  });
+
+  await deployerClient.writeContract({
+    abi: vendorsContract.abi,
+    address: vendorsContract.address,
+    functionName: "setOrdersAddress",
+    args: [ordersContract.address],
+  });
+
+  await deployerClient.writeContract({
+    abi: vendorsContract.abi,
+    address: vendorsContract.address,
+    functionName: "transferOwnership",
+    args: [timelockContract.address],
   });
 
   if (hre.network.name === "localhost") {
