@@ -2,6 +2,10 @@ import hre from "hardhat";
 
 import { updateContractAddresses } from "../lib/update-contract-addresses";
 
+const USDC_ADDRESS = {
+  sepolia: "0x036CbD53842c5426634e7929541eC2318f3dCF7e",
+};
+
 async function deployTodoList() {
   const [deployerClient] = await hre.viem.getWalletClients();
   const todoList = await hre.viem.deployContract("TodoList", [
@@ -13,6 +17,12 @@ async function deployTodoList() {
 
 async function deployTestSolidityTypes() {
   const testSolidityTypes = await hre.viem.deployContract("TestSolidityTypes");
+  console.log(`TestSolidityTypes deployed to ${testSolidityTypes.address}`);
+  return testSolidityTypes;
+}
+
+async function deployVendors() {
+  const testSolidityTypes = await hre.viem.deployContract("VennDAOVendors");
   console.log(`TestSolidityTypes deployed to ${testSolidityTypes.address}`);
   return testSolidityTypes;
 }

@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
+error NotVendorOwner();
+
 interface IVennDAOProducts {
     struct Product {
         uint256 id;

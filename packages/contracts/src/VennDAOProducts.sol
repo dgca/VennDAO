@@ -8,20 +8,6 @@ import "@openzeppelin/contracts/utils/Base64.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "./IVennDAOProducts.sol";
 
-error NotVendorOwner();
-
-struct Product {
-    uint256 id;
-    bool active;
-    string name;
-    string description;
-    uint256 price;
-    uint256 minOrderQuantity;
-    uint256 maxOrderQuantity;
-    uint256 vendorTokenId;
-    string[] encryptedOrderFields;
-}
-
 contract VennDAOProducts is Ownable, IVennDAOProducts {
     using Strings for uint256;
 

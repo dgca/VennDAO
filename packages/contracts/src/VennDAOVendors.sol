@@ -3,21 +3,25 @@
 pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/cryptography/EIP712.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Votes.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/utils/Base64.sol";
+import "./IVennDAOVendors.sol";
 
-struct VendorMetadata {
-    string name;
-    string description;
-    string website;
-    uint128 revenue;
-}
-
-contract VennDAOVendors is ERC721, Ownable, EIP712, ERC721Votes {
+contract VennDAOVendors is
+    IVennDAOVendors,
+    ERC721,
+    Ownable,
+    EIP712,
+    ERC721Votes
+{
     using Strings for uint256;
+
+    uint256 public membershipFee;
+    IERC20 public usdcContract;
 
     uint256 private nextTokenId;
     /** Revenue (USDC) a vendor must meet in order to vote */
@@ -25,8 +29,12 @@ contract VennDAOVendors is ERC721, Ownable, EIP712, ERC721Votes {
     mapping(uint256 => VendorMetadata) private metadataByTokenId;
 
     constructor(
-        address initialOwner
-    ) ERC721("VennDAO", "VNDAO") Ownable(initialOwner) EIP712("VennDAO", "1") {}
+        address _initialOwner,
+        address _usdcContract
+    ) ERC721("VennDAO", "VNDAO") Ownable(_initialOwner) EIP712("VennDAO", "1") {
+        membershipFee = 50 * 10 ** 6; // 50 USDC
+        usdcContract = IERC20(_usdcContract);
+    }
 
     /**
      * Returns whether or not a token has met the revenue threshold to vote
