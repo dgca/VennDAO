@@ -1,12 +1,12 @@
 import "@/styles/globals.css";
-import "ui-utils/styles/global.css";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
 import type { AppProps } from "next/app";
 
-import { ThemeProvider } from "@/components/ThemeProvider/ThemeProvider";
-import { Web3Provider } from "@/web3/Web3Provider/Web3Provider";
+import { Toaster } from "ui-kit";
 
-const queryClient = new QueryClient();
+import { ThemeProvider } from "@/components/ThemeProvider/ThemeProvider";
+import { queryClient } from "@/queryClient";
+import { Web3Provider } from "@/web3/Web3Provider/Web3Provider";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -19,6 +19,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       <QueryClientProvider client={queryClient}>
         <Web3Provider>
           <Component {...pageProps} />
+          <Toaster />
         </Web3Provider>
       </QueryClientProvider>
     </ThemeProvider>

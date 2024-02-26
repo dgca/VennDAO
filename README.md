@@ -1,6 +1,6 @@
 # VennDAO
 
-VennDAO is a network of vendors that provide products and services to other web3 projects entirely onchain.
+VennDAO is a network of vendors that provide products and services to web3 projects entirely onchain.
 
 ## Vendors and products
 
@@ -26,3 +26,18 @@ Any sensitive information such as shipping addresses or email addresses are full
 - Start a local Hardhat node: `npx nx node contracts`
 - Deploy contracts: `nx hardhat contracts -- run --network localhost scripts/deploy.ts`
 - Run the frontend: `nx dev frontend`
+
+## Tech used (non-exhaustive list)
+
+- Hardhat
+- OpenZeppelin Contracts
+- Rainbowkit
+- Next.js
+- Wagmi/Viem
+- shadcn/ui
+
+To-do
+- The Graph
+- Deploy to Base
+- Bridging via wormhole?
+- EthStorage?

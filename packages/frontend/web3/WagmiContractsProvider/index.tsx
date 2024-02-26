@@ -6,13 +6,29 @@ import { getContractAddresses } from "../getContractAddresses";
 const contractAddresses = getContractAddresses();
 
 const { WagmiContractsProvider, useContracts } = initUseWagmiContracts({
-  TodoList: {
-    abi: abis.TodoList,
-    defaultAddress: contractAddresses.TodoList,
+  VennDAOVendors: {
+    abi: abis.VennDAOVendors,
+    defaultAddress: contractAddresses.VennDAOVendors,
   },
-  TestSolidityTypes: {
-    abi: abis.TestSolidityTypes,
-    defaultAddress: contractAddresses.TestSolidityTypes,
+  VennDAOTimelock: {
+    abi: abis.VennDAOTimelock,
+    defaultAddress: contractAddresses.VennDAOTimelock,
+  },
+  VennDAOGovernor: {
+    abi: abis.VennDAOGovernor,
+    defaultAddress: contractAddresses.VennDAOGovernor,
+  },
+  VennDAOProducts: {
+    abi: abis.VennDAOProducts,
+    defaultAddress: contractAddresses.VennDAOProducts,
+  },
+  VennDAOOrders: {
+    abi: abis.VennDAOOrders,
+    defaultAddress: contractAddresses.VennDAOOrders,
+  },
+  MockUSDC: {
+    abi: abis.MockUSDC,
+    defaultAddress: contractAddresses.MockUSDC,
   },
 });
 

@@ -13,6 +13,8 @@ contract VennDAOProducts is Ownable, IVennDAOProducts {
     using Strings for uint256;
 
     Product[] public products;
+    // @todo: This is temporary while we figure out Subgraph stuff
+    mapping(uint256 => Product[]) public productsByVendorId;
 
     IERC721 private vendorsContract;
 
@@ -56,6 +58,7 @@ contract VennDAOProducts is Ownable, IVennDAOProducts {
         });
 
         products.push(product);
+        productsByVendorId[_vendorTokenId].push(product);
 
         emit ProductCreated(
             productId,
@@ -77,6 +80,12 @@ contract VennDAOProducts is Ownable, IVennDAOProducts {
         products[_productId].active = _active;
 
         emit ProductActiveStatusChanged(_productId, _active);
+    }
+
+    function getProductsByVendorId(
+        uint256 _vendorTokenId
+    ) external view returns (Product[] memory) {
+        return productsByVendorId[_vendorTokenId];
     }
 
     /** Asserts that the caller owns the given token ID */

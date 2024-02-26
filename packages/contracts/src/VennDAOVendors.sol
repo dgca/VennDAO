@@ -7,6 +7,7 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/cryptography/EIP712.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Votes.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/utils/Base64.sol";
 import "./IVennDAOVendors.sol";
@@ -16,9 +17,10 @@ error OnlyOrdersContract();
 contract VennDAOVendors is
     IVennDAOVendors,
     ERC721,
-    Ownable,
+    ERC721Enumerable,
     EIP712,
-    ERC721Votes
+    ERC721Votes,
+    Ownable
 {
     using Strings for uint256;
 
@@ -106,6 +108,19 @@ contract VennDAOVendors is
         ordersAddress = _ordersAddress;
     }
 
+    function getAllTokensByOwner(
+        address _owner
+    ) external view returns (uint256[] memory) {
+        uint256 ownerTokenCount = balanceOf(_owner);
+        uint256[] memory ownedTokenIds = new uint256[](ownerTokenCount);
+
+        for (uint256 i = 0; i < ownerTokenCount; i++) {
+            ownedTokenIds[i] = tokenOfOwnerByIndex(_owner, i);
+        }
+
+        return ownedTokenIds;
+    }
+
     function _assertOrdersContract() internal view {
         if (msg.sender != ordersAddress) {
             revert OnlyOrdersContract();
@@ -154,14 +169,24 @@ contract VennDAOVendors is
         address to,
         uint256 tokenId,
         address auth
-    ) internal override(ERC721, ERC721Votes) returns (address) {
+    )
+        internal
+        override(ERC721, ERC721Enumerable, ERC721Votes)
+        returns (address)
+    {
         return super._update(to, tokenId, auth);
     }
 
     function _increaseBalance(
         address account,
         uint128 value
-    ) internal override(ERC721, ERC721Votes) {
+    ) internal override(ERC721, ERC721Enumerable, ERC721Votes) {
         super._increaseBalance(account, value);
+    }
+
+    function supportsInterface(
+        bytes4 interfaceId
+    ) public view override(ERC721, ERC721Enumerable, IERC165) returns (bool) {
+        return super.supportsInterface(interfaceId);
     }
 }

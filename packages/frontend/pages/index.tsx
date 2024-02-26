@@ -10,7 +10,7 @@ export default function Home() {
     <MainLayout>
       <div className="container px-4 py-12 max-w-4xl mx-auto">
         <Text.H1 className="leading-relaxed">
-          Connecting vendors of physical goods to the web3 ecosystem.
+          Connecting vendors to the web3 economy
         </Text.H1>
 
         <Text.P>

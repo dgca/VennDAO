@@ -18,6 +18,12 @@ function getUSDCAddress() {
   return address;
 }
 
+async function deployMockUSDC() {
+  const usdc = await hre.viem.deployContract("MockUSDC", []);
+  console.log(`MockUSDC deployed to ${usdc.address}`);
+  return usdc;
+}
+
 async function deployVendors({
   initialOwner,
   usdcAddress,
@@ -100,7 +106,14 @@ async function main() {
   const publicClient = await hre.viem.getPublicClient();
   const [deployerClient] = await hre.viem.getWalletClients();
 
-  const usdcAddress = getUSDCAddress();
+  let usdcAddress: Address;
+
+  if (hre.network.name === "localhost") {
+    const mockUSDC = await deployMockUSDC();
+    usdcAddress = mockUSDC.address;
+  } else {
+    usdcAddress = getUSDCAddress();
+  }
 
   const timelockContract = await deployTimelock(deployerClient.account.address);
 
@@ -196,6 +209,7 @@ async function main() {
 
   if (hre.network.name === "localhost") {
     updateContractAddresses("localhost", {
+      MockUSDC: usdcAddress,
       VennDAOVendors: vendorsContract.address,
       VennDAOTimelock: timelockContract.address,
       VennDAOGovernor: governorContract.address,

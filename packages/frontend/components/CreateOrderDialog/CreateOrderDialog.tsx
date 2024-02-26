@@ -21,8 +21,8 @@ export function CreateOrderDialog() {
   if (!isClient) return null;
   return (
     <Dialog>
-      <DialogTrigger>
-        <Button>Create</Button>
+      <DialogTrigger asChild>
+        <Button type={undefined}>Create</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

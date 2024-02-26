@@ -8,7 +8,7 @@
     "test": "hardhat test",
     "build": "npx hardhat compile && ts-node ./lib/update-abi-exports.ts && tsup ./exports/index.ts --dts",
     "deploy-local": "hardhat run --network localhost scripts/deploy.ts",
-    "dev": "watch 'npm run compile && npm run deploy-local && npm run build' ./src"
+    "dev": "watch 'npm run deploy-local && npm run build' ./src"
   },
   "devDependencies": {
     "@aragon/osx": "^1.3.0",
