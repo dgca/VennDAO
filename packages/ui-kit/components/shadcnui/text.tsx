@@ -188,6 +188,22 @@ function Muted({
   );
 }
 
+function Anchor({
+  as: Component = "a",
+  children,
+  className,
+  ...props
+}: PolymorphicComponentProps & React.AnchorHTMLAttributes<HTMLAnchorElement>) {
+  return (
+    <Component
+      className={cn("text-primary hover:underline", className)}
+      {...props}
+    >
+      {children}
+    </Component>
+  );
+}
+
 export const Text = {
   H1,
   H2,
@@ -202,4 +218,5 @@ export const Text = {
   Large,
   Small,
   Muted,
+  Anchor,
 };
