@@ -8,33 +8,14 @@ import "@openzeppelin/contracts/utils/Base64.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "./IVennDAOProducts.sol";
 import "./IVennDAOVendors.sol";
+import "./IVennDAOOrders.sol";
 
 error InvalidOrderQuantity();
 error InactiveProduct();
 error PaymentFailed();
 error InvalidOrderStatus(string message);
 
-enum Status {
-    Pending,
-    Accepted,
-    Fulfilled,
-    Cancelled,
-    Expired
-}
-
-struct Order {
-    uint256 id;
-    uint256 productId;
-    uint256 quantity;
-    address placedBy;
-    address refundRecipient;
-    uint256 orderTotal;
-    Status status;
-    uint256 createdAt;
-    bytes encryptedOrderFields;
-}
-
-contract VennDAOOrders is Ownable {
+contract VennDAOOrders is IVennDAOOrders, Ownable {
     using Strings for uint256;
 
     /** Amount permillion of order subtotal to be paid to the DAO. I.e. percentage with 6 decimal places. */
@@ -45,26 +26,6 @@ contract VennDAOOrders is Ownable {
     IVennDAOProducts private productsContract;
     IVennDAOVendors private vendorsContract;
     bool private locked;
-
-    event OrderPlaced(
-        uint256 indexed orderId,
-        uint256 indexed productId,
-        uint256 quantity,
-        address indexed buyer
-    );
-    event OrderStatusUpdated(uint256 indexed orderId, Status indexed newStatus);
-    event DaoFeeUpdated(uint256 newFee);
-    event OrderFundsTransferred(
-        uint256 indexed orderId,
-        address indexed recipient,
-        uint256 amount,
-        uint256 daoAmount
-    );
-    event VendorRefundIssued(
-        uint256 indexed orderId,
-        address indexed vendor,
-        uint256 amount
-    );
 
     modifier noReentrancy() {
         require(!locked, "No reentrancy allowed!");
@@ -81,13 +42,30 @@ contract VennDAOOrders is Ownable {
         productsContract = _productsContract;
         vendorsContract = _vendorsContract;
         daoFee = 20_000; // 2% initial fee
+        emit VennDAOOrdersInitialized(
+            _productsContract,
+            _vendorsContract,
+            _initialOwner
+        );
+    }
+
+    function calculateOrderTotal(
+        uint256 _productId,
+        uint256 _quantity
+    ) external view returns (uint256) {
+        IVennDAOProducts.Product memory product = productsContract
+            .getProductById(_productId);
+        uint256 orderSubtotal = product.price * _quantity;
+        uint256 daoFeeAmount = _calculateFee(orderSubtotal);
+        return orderSubtotal + daoFeeAmount;
     }
 
     function placeOrder(
         uint256 _productId,
         uint256 _quantity,
         address _refundRecipient,
-        bytes memory _encryptedOrderFields
+        string[] memory _publicFields,
+        string memory _encryptedFields
     ) external payable {
         // Get product details
         IVennDAOProducts.Product memory product = productsContract
@@ -109,8 +87,7 @@ contract VennDAOOrders is Ownable {
         uint256 daoFeeAmount = _calculateFee(orderSubtotal);
         uint256 orderTotal = orderSubtotal + daoFeeAmount;
 
-        IERC20 usdcContract = vendorsContract.usdcContract();
-        bool transferSuccess = usdcContract.transferFrom(
+        bool transferSuccess = vendorsContract.usdcContract().transferFrom(
             msg.sender,
             address(this),
             orderTotal
@@ -121,10 +98,9 @@ contract VennDAOOrders is Ownable {
         }
 
         // Create order
-        uint256 orderId = orders.length;
         orders.push(
             Order({
-                id: orderId,
+                id: orders.length,
                 productId: _productId,
                 quantity: _quantity,
                 placedBy: msg.sender,
@@ -132,11 +108,23 @@ contract VennDAOOrders is Ownable {
                 orderTotal: orderTotal,
                 status: Status.Pending,
                 createdAt: block.timestamp,
-                encryptedOrderFields: _encryptedOrderFields
+                publicFields: _publicFields,
+                encryptedFields: _encryptedFields
             })
         );
 
-        emit OrderPlaced(orderId, _productId, _quantity, msg.sender);
+        emit OrderPlaced(
+            orders.length,
+            _productId,
+            msg.sender,
+            _quantity,
+            _refundRecipient,
+            orderTotal,
+            Status.Pending,
+            block.timestamp,
+            _publicFields,
+            _encryptedFields
+        );
     }
 
     function updateOrderStatus(
@@ -236,6 +224,10 @@ contract VennDAOOrders is Ownable {
     function updateDaoFee(uint256 _newFee) external onlyOwner {
         daoFee = _newFee;
         emit DaoFeeUpdated(_newFee);
+    }
+
+    function getOrders() external view returns (Order[] memory) {
+        return orders;
     }
 
     function _assertVendor(uint256 _vendorTokenId) internal view {

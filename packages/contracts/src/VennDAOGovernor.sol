@@ -8,6 +8,7 @@ import "@openzeppelin/contracts/governance/extensions/GovernorCountingSimple.sol
 import "@openzeppelin/contracts/governance/extensions/GovernorVotes.sol";
 import "@openzeppelin/contracts/governance/extensions/GovernorVotesQuorumFraction.sol";
 import "@openzeppelin/contracts/governance/extensions/GovernorTimelockControl.sol";
+import "./IVennDAOVendors.sol";
 
 contract VennDAOGovernor is
     Governor,
@@ -17,22 +18,27 @@ contract VennDAOGovernor is
     GovernorVotesQuorumFraction,
     GovernorTimelockControl
 {
+    IVennDAOVendors private vennDAOVendors;
+
     constructor(
-        IVotes _token,
+        IVotes _vennDAOVendors,
         TimelockController _timelock
     )
         Governor("VennDAOGovernor")
         /* Using Base's 2 second block time */
         GovernorSettings(43200 /* 1 day */, 302400 /* 1 week */, 0)
-        GovernorVotes(_token)
+        GovernorVotes(_vennDAOVendors)
         GovernorVotesQuorumFraction(4)
         GovernorTimelockControl(_timelock)
-    {}
+    {
+        vennDAOVendors = IVennDAOVendors(address(_vennDAOVendors));
+    }
 
     function castVote(
         uint256 proposalId,
         uint8 support
     ) public override returns (uint256) {
+        // bool canVote = vennDAOVendors.isVoteEligible(msg.sender);
         // TODO: Check if the voter is eligible to vote
         address voter = _msgSender();
         return _castVote(proposalId, voter, support, "");

@@ -39,7 +39,8 @@ contract VennDAOProducts is Ownable, IVennDAOProducts {
         uint256 _maxOrderQuantity,
         bool _active,
         uint256 _vendorTokenId,
-        string[] memory _encryptedOrderFields
+        string[] memory _publicFields,
+        string[] memory _encryptedFields
     ) external {
         uint256 productId = products.length;
 
@@ -54,7 +55,8 @@ contract VennDAOProducts is Ownable, IVennDAOProducts {
             maxOrderQuantity: _maxOrderQuantity,
             active: _active,
             vendorTokenId: _vendorTokenId,
-            encryptedOrderFields: _encryptedOrderFields
+            publicFields: _publicFields,
+            encryptedFields: _encryptedFields
         });
 
         products.push(product);
@@ -69,7 +71,8 @@ contract VennDAOProducts is Ownable, IVennDAOProducts {
             _minOrderQuantity,
             _maxOrderQuantity,
             _vendorTokenId,
-            _encryptedOrderFields
+            _encryptedFields,
+            _publicFields
         );
     }
 
@@ -86,6 +89,12 @@ contract VennDAOProducts is Ownable, IVennDAOProducts {
         uint256 _vendorTokenId
     ) external view returns (Product[] memory) {
         return productsByVendorId[_vendorTokenId];
+    }
+
+    function getOwnerAddressByProductId(
+        uint256 _productId
+    ) external view returns (address) {
+        return vendorsContract.ownerOf(products[_productId].vendorTokenId);
     }
 
     /** Asserts that the caller owns the given token ID */

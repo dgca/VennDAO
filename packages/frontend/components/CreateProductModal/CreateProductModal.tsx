@@ -25,7 +25,8 @@ const FORM_FIELDS = {
   minOrderQuantity: "minOrderQuantity",
   maxOrderQuantity: "maxOrderQuantity",
   active: "active",
-  encryptedOrderFields: "encryptedOrderFields",
+  publicFields: "publicFields",
+  encryptedFields: "encryptedFields",
   description: "description",
 } as const;
 
@@ -62,11 +63,14 @@ export function CreateProductModal({ vendorTokenId, onClose }: Props) {
             ) as (keyof typeof FORM_FIELDS)[];
             const formFields = getFormFields(e.currentTarget.elements, fields);
 
-            const encryptedOrderFields =
-              formFields.encryptedOrderFields.trim().length > 0
-                ? formFields.encryptedOrderFields
-                    .split(",")
-                    .map((s) => s.trim())
+            const publicFields =
+              formFields.publicFields.trim().length > 0
+                ? formFields.publicFields.split(",").map((s) => s.trim())
+                : [];
+
+            const encryptedFields =
+              formFields.encryptedFields.trim().length > 0
+                ? formFields.encryptedFields.split(",").map((s) => s.trim())
                 : [];
 
             createProduct.mutate(
@@ -78,7 +82,8 @@ export function CreateProductModal({ vendorTokenId, onClose }: Props) {
                 BigInt(formFields.maxOrderQuantity),
                 formFields.active === "true",
                 vendorTokenId,
-                encryptedOrderFields,
+                publicFields,
+                encryptedFields,
               ],
               {
                 onSuccess: () => {
@@ -114,11 +119,16 @@ export function CreateProductModal({ vendorTokenId, onClose }: Props) {
               <Input name={FORM_FIELDS.maxOrderQuantity} autoComplete="off" />
             </Field>
           </div>
+          <div className="flex gap-4">
+            <Field label="Public Fields (comma separated)">
+              <Input name={FORM_FIELDS.publicFields} autoComplete="off" />
+            </Field>
+            <Field label="Encrypted Fields (comma separated)">
+              <Input name={FORM_FIELDS.encryptedFields} autoComplete="off" />
+            </Field>
+          </div>
           <Field label="Active">
             <Switch name={FORM_FIELDS.active} />
-          </Field>
-          <Field label="Encrypted Order Fields (comma separated)">
-            <Input name={FORM_FIELDS.encryptedOrderFields} autoComplete="off" />
           </Field>
           <Field label="Description">
             <Textarea name={FORM_FIELDS.description} />

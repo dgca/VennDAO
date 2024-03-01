@@ -30,6 +30,10 @@ const { WagmiContractsProvider, useContracts } = initUseWagmiContracts({
     abi: abis.MockUSDC,
     defaultAddress: contractAddresses.MockUSDC,
   },
+  DemoProject: {
+    abi: abis.DemoProject,
+    defaultAddress: contractAddresses.DemoProject,
+  },
 });
 
 export { WagmiContractsProvider, useContracts };

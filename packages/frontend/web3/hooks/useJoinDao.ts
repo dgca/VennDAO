@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
-import { parseUnits } from "viem";
-import { usePublicClient } from "wagmi";
+import { Address, parseUnits } from "viem";
+import { useAccount, usePublicClient } from "wagmi";
 
 import { contractAddresses } from "contracts";
 
@@ -9,9 +9,22 @@ import { useContracts } from "../WagmiContractsProvider";
 
 export type Steps = "pending" | "approve" | "join" | "success" | "error";
 
+async function getEncryptionPublicKey(address: Address) {
+  const result = await window.ethereum.request({
+    method: "eth_getEncryptionPublicKey",
+    params: [address],
+  });
+  if (typeof result !== "string") {
+    throw new Error("Invalid encryption public key");
+  }
+  return result;
+}
+
 export function useJoinDao() {
   const contracts = useContracts();
   const publicClient = usePublicClient()!;
+  const userAccount = useAccount();
+
   const [step, setStep] = useState<Steps>("pending");
 
   const mutation = useMutation({
@@ -34,11 +47,13 @@ export function useJoinDao() {
         );
       await publicClient.waitForTransactionReceipt({ hash: approveHash });
 
+      const encryptionKey = await getEncryptionPublicKey(userAccount.address!);
+
       setStep("join");
 
       const [joinHash] = await contracts
         .VennDAOVendors()
-        .joinDAO(name, website, description);
+        .joinDAO(name, website, description, encryptionKey);
 
       await publicClient.waitForTransactionReceipt({ hash: joinHash });
 

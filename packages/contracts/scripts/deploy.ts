@@ -3,24 +3,14 @@ import { Address } from "viem";
 
 import { updateContractAddresses } from "../lib/update-contract-addresses";
 
-function getUSDCAddress() {
-  const address: Address | undefined = (
-    {
-      localhost: "0x036CbD53842c5426634e7929541eC2318f3dCF7e", // @todo: Deploy a local USDC contract
-      sepolia: "0x036CbD53842c5426634e7929541eC2318f3dCF7e",
-    } as const
-  )[hre.network.name];
-
-  if (!address) {
-    throw new Error("USDC address not found for network");
-  }
-
-  return address;
+function delay(ms = 3000) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 async function deployMockUSDC() {
   const usdc = await hre.viem.deployContract("MockUSDC", []);
   console.log(`MockUSDC deployed to ${usdc.address}`);
+  await delay();
   return usdc;
 }
 
@@ -39,6 +29,7 @@ async function deployVendors({
     treasuryAddress,
   ]);
   console.log(`Vendors deployed to ${vendors.address}`);
+  await delay();
   return vendors;
 }
 
@@ -51,6 +42,7 @@ async function deployTimelock(tempAdmin: Address) {
     tempAdmin,
   ]);
   console.log(`Timelock deployed to ${timelock.address}`);
+  await delay();
   return timelock;
 }
 
@@ -66,6 +58,7 @@ async function deployGovernor({
     timelockAddress,
   ]);
   console.log(`Governor deployed to ${governor.address}`);
+  await delay();
   return governor;
 }
 
@@ -81,6 +74,7 @@ async function deployProducts({
     ownerAddress,
   ]);
   console.log(`Products deployed to ${products.address}`);
+  await delay();
   return products;
 }
 
@@ -99,21 +93,35 @@ async function deployOrders({
     ownerAddress,
   ]);
   console.log(`Orders deployed to ${orders.address}`);
+  await delay();
   return orders;
+}
+
+async function deployBasedHams({
+  initialOrder,
+  ordersAddress,
+  usdcAddress,
+}: {
+  initialOrder: Address;
+  ordersAddress: Address;
+  usdcAddress: Address;
+}) {
+  const basedHams = await hre.viem.deployContract("DemoProject", [
+    initialOrder,
+    ordersAddress,
+    usdcAddress,
+  ]);
+  console.log(`BasedHams deployed to ${basedHams.address}`);
+  await delay();
+  return basedHams;
 }
 
 async function main() {
   const publicClient = await hre.viem.getPublicClient();
   const [deployerClient] = await hre.viem.getWalletClients();
 
-  let usdcAddress: Address;
-
-  if (hre.network.name === "localhost") {
-    const mockUSDC = await deployMockUSDC();
-    usdcAddress = mockUSDC.address;
-  } else {
-    usdcAddress = getUSDCAddress();
-  }
+  const mockUSDC = await deployMockUSDC();
+  const usdcAddress = mockUSDC.address;
 
   const timelockContract = await deployTimelock(deployerClient.account.address);
 
@@ -175,12 +183,16 @@ async function main() {
     args: [PROPOSER_ROLE, governorContract.address],
   });
 
+  await delay();
+
   await deployerClient.writeContract({
     abi: timelockContract.abi,
     address: timelockContract.address,
     functionName: "renounceRole",
     args: [DEFAULT_ADMIN_ROLE, deployerClient.account.address],
   });
+
+  await delay();
 
   const productsContract = await deployProducts({
     vendorsAddress: vendorsContract.address,
@@ -200,6 +212,8 @@ async function main() {
     args: [ordersContract.address],
   });
 
+  await delay();
+
   await deployerClient.writeContract({
     abi: vendorsContract.abi,
     address: vendorsContract.address,
@@ -207,9 +221,25 @@ async function main() {
     args: [timelockContract.address],
   });
 
-  if (hre.network.name === "localhost") {
-    updateContractAddresses("localhost", {
+  await delay();
+
+  const demoProject = await deployBasedHams({
+    initialOrder: deployerClient.account.address,
+    ordersAddress: ordersContract.address,
+    usdcAddress: usdcAddress,
+  });
+
+  await deployerClient.writeContract({
+    abi: mockUSDC!.abi,
+    address: usdcAddress,
+    functionName: "mintTo",
+    args: [demoProject.address],
+  });
+
+  if (hre.network.name === "localhost" || hre.network.name === "sepolia") {
+    updateContractAddresses(hre.network.name, {
       MockUSDC: usdcAddress,
+      DemoProject: demoProject.address,
       VennDAOVendors: vendorsContract.address,
       VennDAOTimelock: timelockContract.address,
       VennDAOGovernor: governorContract.address,

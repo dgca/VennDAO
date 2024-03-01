@@ -54,7 +54,8 @@ export default function Products() {
             price,
             minOrderQuantity,
             maxOrderQuantity,
-            encryptedOrderFields,
+            publicFields,
+            encryptedFields,
           }) => (
             <Card className="py-4 px-6 w-full mb-6" key={id}>
               <div className="flex items-center justify-between">
@@ -82,12 +83,28 @@ export default function Products() {
                   <Text.Plain>{Number(maxOrderQuantity)}</Text.Plain>
                 </div>
               </div>
-              {encryptedOrderFields.length > 0 && (
+              {publicFields.length > 0 && (
+                <div className="mb-4">
+                  <Text.Muted>Public fields:</Text.Muted>
+                  <div className="flex gap-1">
+                    {publicFields.map((field, i) => (
+                      <Badge key={i} className="pointer-events-none">
+                        {field}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {encryptedFields.length > 0 && (
                 <div className="mb-4">
                   <Text.Muted>Encrypted fields:</Text.Muted>
                   <div className="flex gap-1">
-                    {encryptedOrderFields.map((field, i) => (
-                      <Badge key={i} className="pointer-events-none">
+                    {encryptedFields.map((field, i) => (
+                      <Badge
+                        key={i}
+                        className="pointer-events-none"
+                        variant="destructive"
+                      >
                         {field}
                       </Badge>
                     ))}

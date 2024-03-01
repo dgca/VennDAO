@@ -7,6 +7,7 @@ import { JoinDaoModal } from "@/components/JoinDaoModal/JoinDaoModal";
 import { MainLayout } from "@/components/Layouts/MainLayout";
 import { getFormFields } from "@/utils/formUtils";
 import { useJoinDao } from "@/web3/hooks/useJoinDao";
+import { useMintMockTokens } from "@/web3/hooks/useMintMockTokens";
 import { useContracts } from "@/web3/WagmiContractsProvider";
 
 export default function Join() {
@@ -20,6 +21,7 @@ export default function Join() {
   });
 
   const joinDao = useJoinDao();
+  const mintMockToens = useMintMockTokens();
 
   return (
     <>
@@ -72,9 +74,9 @@ export default function Join() {
 
             <Button>Mint Membership</Button>
             <Button
-              onClick={(e) => {
+              onClick={async (e) => {
                 e.preventDefault();
-                contracts.MockUSDC().mint();
+                mintMockToens.mutate();
               }}
             >
               Get mock USDC

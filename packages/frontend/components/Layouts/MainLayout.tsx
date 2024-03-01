@@ -25,7 +25,7 @@ export function MainLayout({ children, includeFooter = true }: Props) {
         <link href="/favicon.ico" rel="icon" />
       </Head>
       <div className="flex flex-col items-stretch min-h-svh">
-        <nav className="flex justify-between items-center border-b py-2 px-4 sticky top-0">
+        <nav className="flex justify-between items-center border-b py-2 px-4 sticky top-0 bg-background">
           <Link href="/" className="flex items-center gap-0">
             <div className="flex items-center">
               <div className="w-8 h-8 border-2 border-foreground rounded-full" />

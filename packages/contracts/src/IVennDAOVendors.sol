@@ -8,10 +8,24 @@ struct VendorMetadata {
     string name;
     string description;
     string website;
+    string encryptionKey;
     uint256 revenue;
 }
 
 interface IVennDAOVendors is IERC721 {
+    event NewVendorMember(
+        address indexed member,
+        string name,
+        string description,
+        string website
+    );
+
+    event MembershipFeeUpdated(uint256 newFee);
+
+    event OrdersAddressUpdated(address newOrdersAddress);
+
+    event TokenBurned(uint256 tokenId);
+
     function membershipFee() external view returns (uint256);
 
     function usdcContract() external view returns (IERC20);
@@ -21,4 +35,6 @@ interface IVennDAOVendors is IERC721 {
     function increaseVendorRevenue(uint256 _tokenId, uint256 _amount) external;
 
     function decreaseVendorRevenue(uint256 _tokenId, uint256 _amount) external;
+
+    function isVoteEligible(uint256 _tokenId) external view returns (bool);
 }

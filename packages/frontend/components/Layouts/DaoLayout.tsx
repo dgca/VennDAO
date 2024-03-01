@@ -2,7 +2,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { ReactNode } from "react";
 
-import { buttonVariants, Text } from "ui-kit";
+import { buttonVariants } from "ui-kit";
 import { cn } from "ui-utils";
 
 import { MainLayout } from "@/components/Layouts/MainLayout";
@@ -66,7 +66,9 @@ export function DaoLayout({ children }: { children: ReactNode }) {
         <aside className="p-4 lg:w-80 lg:border-r">
           <SidebarNav items={sidebarNavItems} />
         </aside>
-        <div className="container px-4 py-12 max-w-6xl mx-auto">{children}</div>
+        <div className="container px-4 py-12 max-w-6xl mx-auto">
+          <div>{children}</div>
+        </div>
       </div>
     </MainLayout>
   );

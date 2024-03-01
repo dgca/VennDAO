@@ -13,7 +13,8 @@ interface IVennDAOProducts {
         uint256 minOrderQuantity;
         uint256 maxOrderQuantity;
         uint256 vendorTokenId;
-        string[] encryptedOrderFields;
+        string[] publicFields;
+        string[] encryptedFields;
     }
 
     event ProductCreated(
@@ -25,7 +26,8 @@ interface IVennDAOProducts {
         uint256 minOrderQuantity,
         uint256 maxOrderQuantity,
         uint256 vendorTokenId,
-        string[] encryptedOrderFields
+        string[] publicFields,
+        string[] encryptedFields
     );
 
     event ProductActiveStatusChanged(uint256 indexed id, bool active);
@@ -42,7 +44,8 @@ interface IVennDAOProducts {
         uint256 _maxOrderQuantity,
         bool _active,
         uint256 _vendorTokenId,
-        string[] memory _encryptedOrderFields
+        string[] memory publicFields,
+        string[] memory _encryptedFields
     ) external;
 
     function setActiveStatus(uint256 _productId, bool _active) external;

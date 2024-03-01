@@ -53,7 +53,8 @@ contract VennDAOVendors is
     function joinDAO(
         string memory _name,
         string memory _description,
-        string memory _website
+        string memory _website,
+        string memory _encryptionKey
     ) public {
         uint256 tokenId = nextTokenId++;
 
@@ -65,14 +66,18 @@ contract VennDAOVendors is
             name: _name,
             description: _description,
             website: _website,
+            encryptionKey: _encryptionKey,
             revenue: 0
         });
 
         metadataByTokenId[tokenId] = metadata;
+
+        emit NewVendorMember(msg.sender, _name, _description, _website);
     }
 
     function updateMembershipFee(uint256 _newFee) public onlyOwner {
         membershipFee = _newFee;
+        emit MembershipFeeUpdated(_newFee);
     }
 
     /**
@@ -106,11 +111,12 @@ contract VennDAOVendors is
 
     function setOrdersAddress(address _ordersAddress) public onlyOwner {
         ordersAddress = _ordersAddress;
+        emit OrdersAddressUpdated(_ordersAddress);
     }
 
     function getAllTokensByOwner(
         address _owner
-    ) external view returns (uint256[] memory) {
+    ) public view returns (uint256[] memory) {
         uint256 ownerTokenCount = balanceOf(_owner);
         uint256[] memory ownedTokenIds = new uint256[](ownerTokenCount);
 
@@ -133,6 +139,7 @@ contract VennDAOVendors is
      */
     function burn(uint256 tokenId) public onlyOwner {
         _update(address(0), tokenId, _msgSender());
+        emit TokenBurned(tokenId);
     }
 
     function _buildMetadata(
@@ -161,6 +168,21 @@ contract VennDAOVendors is
                     )
                 )
             );
+    }
+
+    function _getVotingUnits(
+        address account
+    ) internal view override returns (uint256) {
+        uint256[] memory tokenIds = getAllTokensByOwner(account);
+        uint256 votingUnits = 0;
+        // for each token that is follows condition: metadataByTokenId[_tokenId].revenue > voterRevenueThreshold
+        // increase voting unit
+        for (uint256 i = 0; i < tokenIds.length; i++) {
+            if (isVoteEligible(tokenIds[i])) {
+                votingUnits++;
+            }
+        }
+        return votingUnits;
     }
 
     // The following functions are overrides required by Solidity.
