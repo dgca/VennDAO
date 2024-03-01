@@ -5,7 +5,7 @@ error NotVendorOwner();
 
 interface IVennDAOProducts {
     struct Product {
-        uint256 id;
+        uint256 productId;
         bool active;
         string name;
         string description;
@@ -18,7 +18,7 @@ interface IVennDAOProducts {
     }
 
     event ProductCreated(
-        uint256 indexed id,
+        uint256 indexed productId,
         bool active,
         string name,
         string description,
@@ -30,7 +30,7 @@ interface IVennDAOProducts {
         string[] encryptedFields
     );
 
-    event ProductActiveStatusChanged(uint256 indexed id, bool active);
+    event ProductActiveStatusChanged(uint256 indexed productId, bool active);
 
     function getProductById(
         uint256 _productId

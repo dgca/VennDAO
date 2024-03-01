@@ -14,6 +14,7 @@ struct VendorMetadata {
 
 interface IVennDAOVendors is IERC721 {
     event NewVendorMember(
+        uint256 indexed tokenId,
         address indexed member,
         string name,
         string description,

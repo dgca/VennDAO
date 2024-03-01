@@ -59,6 +59,8 @@ contract VennDAOVendors is
 
         usdcContract.transferFrom(msg.sender, treasuryAddress, membershipFee);
 
+        bool isNewMember = balanceOf(msg.sender) == 0;
+
         _safeMint(msg.sender, tokenId);
 
         VendorMetadata memory metadata = VendorMetadata({
@@ -71,7 +73,17 @@ contract VennDAOVendors is
 
         metadataByTokenId[tokenId] = metadata;
 
-        emit NewVendorMember(msg.sender, _name, _description, _website);
+        if (isNewMember && delegates(msg.sender) == address(0)) {
+            delegate(msg.sender);
+        }
+
+        emit NewVendorMember(
+            tokenId,
+            msg.sender,
+            _name,
+            _description,
+            _website
+        );
     }
 
     function updateMembershipFee(uint256 _newFee) public onlyOwner {

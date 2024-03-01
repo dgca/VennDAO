@@ -9,6 +9,9 @@
     },
     "VennDAOProducts": {
       "address": "0x1e24a3fb246ab0129487ccaf53e0e5835c76f082"
+    },
+    "VennDAOVendors": {
+      "address": "0xa7f50c70d5b9354d633b59044de0de362281705f"
     }
   }
 }

@@ -100,7 +100,7 @@ contract VennDAOOrders is IVennDAOOrders, Ownable {
         // Create order
         orders.push(
             Order({
-                id: orders.length,
+                orderId: orders.length,
                 productId: _productId,
                 quantity: _quantity,
                 placedBy: msg.sender,

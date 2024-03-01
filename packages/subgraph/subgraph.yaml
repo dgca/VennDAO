@@ -68,3 +68,53 @@ dataSources:
             uint256,bool,string,string,uint256,uint256,uint256,uint256,string[],string[])
           handler: handleProductCreated
       file: ./src/venn-dao-products.ts
+  - kind: ethereum
+    name: VennDAOVendors
+    network: base-sepolia
+    source:
+      address: "0xa7f50c70d5b9354d633b59044de0de362281705f"
+      abi: VennDAOVendors
+      startBlock: 6776725
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Approval
+        - ApprovalForAll
+        - DelegateChanged
+        - DelegateVotesChanged
+        - EIP712DomainChanged
+        - MembershipFeeUpdated
+        - NewVendorMember
+        - OrdersAddressUpdated
+        - VennDAOVendorsOwnershipTransferred
+        - TokenBurned
+        - Transfer
+      abis:
+        - name: VennDAOVendors
+          file: ./abis/VennDAOVendors.json
+      eventHandlers:
+        - event: Approval(indexed address,indexed address,indexed uint256)
+          handler: handleApproval
+        - event: ApprovalForAll(indexed address,indexed address,bool)
+          handler: handleApprovalForAll
+        - event: DelegateChanged(indexed address,indexed address,indexed address)
+          handler: handleDelegateChanged
+        - event: DelegateVotesChanged(indexed address,uint256,uint256)
+          handler: handleDelegateVotesChanged
+        - event: EIP712DomainChanged()
+          handler: handleEIP712DomainChanged
+        - event: MembershipFeeUpdated(uint256)
+          handler: handleMembershipFeeUpdated
+        - event: NewVendorMember(indexed uint256,indexed address,string,string,string)
+          handler: handleNewVendorMember
+        - event: OrdersAddressUpdated(address)
+          handler: handleOrdersAddressUpdated
+        - event: OwnershipTransferred(indexed address,indexed address)
+          handler: handleOwnershipTransferred
+        - event: TokenBurned(uint256)
+          handler: handleTokenBurned
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleTransfer
+      file: ./src/venn-dao-vendors.ts

@@ -15,7 +15,7 @@ interface IVennDAOOrders {
     }
 
     struct Order {
-        uint256 id;
+        uint256 orderId;
         uint256 productId;
         uint256 quantity;
         address placedBy;

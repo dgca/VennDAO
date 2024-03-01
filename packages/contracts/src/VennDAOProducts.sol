@@ -47,7 +47,7 @@ contract VennDAOProducts is Ownable, IVennDAOProducts {
         _assertVendorOwner(_vendorTokenId);
 
         Product memory product = Product({
-            id: productId,
+            productId: productId,
             name: _name,
             description: _description,
             price: _price,
