@@ -3,7 +3,7 @@ import { Address } from "viem";
 
 import { updateContractAddresses } from "../lib/update-contract-addresses";
 
-function delay(ms = 3000) {
+function delay(ms = 4000) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
@@ -30,6 +30,11 @@ async function deployVendors({
   ]);
   console.log(`Vendors deployed to ${vendors.address}`);
   await delay();
+  await hre.run("verify:verify", {
+    address: vendors.address,
+    constructorArguments: [initialOwner, usdcAddress, treasuryAddress],
+    contract: "src/VennDAOVendors.sol:VennDAOVendors",
+  });
   return vendors;
 }
 
@@ -43,6 +48,11 @@ async function deployTimelock(tempAdmin: Address) {
   ]);
   console.log(`Timelock deployed to ${timelock.address}`);
   await delay();
+  await hre.run("verify:verify", {
+    address: timelock.address,
+    constructorArguments: [24 * 60 * 60 * 2, [], [], tempAdmin],
+    contract: "src/VennDAOTimelock.sol:VennDAOTimelock",
+  });
   return timelock;
 }
 
@@ -59,6 +69,11 @@ async function deployGovernor({
   ]);
   console.log(`Governor deployed to ${governor.address}`);
   await delay();
+  await hre.run("verify:verify", {
+    address: governor.address,
+    constructorArguments: [vendorsAddress, timelockAddress],
+    contract: "src/VennDAOGovernor.sol:VennDAOGovernor",
+  });
   return governor;
 }
 
@@ -75,6 +90,11 @@ async function deployProducts({
   ]);
   console.log(`Products deployed to ${products.address}`);
   await delay();
+  await hre.run("verify:verify", {
+    address: products.address,
+    constructorArguments: [vendorsAddress, ownerAddress],
+    contract: "src/VennDAOProducts.sol:VennDAOProducts",
+  });
   return products;
 }
 
@@ -94,6 +114,11 @@ async function deployOrders({
   ]);
   console.log(`Orders deployed to ${orders.address}`);
   await delay();
+  await hre.run("verify:verify", {
+    address: orders.address,
+    constructorArguments: [productsAddress, vendorsAddress, ownerAddress],
+    contract: "src/VennDAOOrders.sol:VennDAOOrders",
+  });
   return orders;
 }
 

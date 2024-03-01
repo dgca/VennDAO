@@ -9,5 +9,9 @@ export function getContractAddresses() {
     return contractAddresses.localhost;
   }
 
+  if (env === "testnet") {
+    return contractAddresses.sepolia;
+  }
+
   throw new Error(`Contract addresses not found for env: ${env}`);
 }

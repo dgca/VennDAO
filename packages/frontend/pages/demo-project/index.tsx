@@ -1,14 +1,26 @@
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import Image from "next/image";
+import { formatUnits } from "viem";
 
 import { Text, Card, Button, Field, Input, Form } from "ui-kit";
 
 import { ThemeToggle } from "@/components/ThemeProvider/ThemeProvider";
 import { getFormFields } from "@/utils/formUtils";
+import { getContractAddresses } from "@/web3/getContractAddresses";
 import { useMintBasedHam } from "@/web3/hooks/useMintBasedHam";
+import { useContracts } from "@/web3/WagmiContractsProvider";
+
+const contractAddresses = getContractAddresses();
 
 export default function DemoProject() {
+  const contracts = useContracts();
   const { mutate: handleMint } = useMintBasedHam();
+  const demoProjectBalance = contracts.MockUSDC().balanceOf.useRead({
+    args: [contractAddresses.DemoProject],
+  });
+  const projectBalance = demoProjectBalance.data
+    ? formatUnits(demoProjectBalance.data, 6)
+    : null;
 
   return (
     <>
@@ -60,7 +72,21 @@ export default function DemoProject() {
                     <Input name="postalCode" />
                   </Field>
                 </div>
-                <div className="flex justify-end w-full mt-4">
+                <div>
+                  <Text.Small>
+                    Demo project balance: {projectBalance}
+                  </Text.Small>
+                </div>
+                <div className="flex justify-end w-full mt-4 gap-2">
+                  <Button
+                    onClick={() => {
+                      contracts
+                        .MockUSDC()
+                        .mintTo(contractAddresses.DemoProject);
+                    }}
+                  >
+                    Feed Project
+                  </Button>
                   <Button className="bg-purple-500 mt-auto hover:bg-purple-700">
                     Mint my hamster
                   </Button>

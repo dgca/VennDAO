@@ -26,22 +26,12 @@ contract VennDAOGovernor is
     )
         Governor("VennDAOGovernor")
         /* Using Base's 2 second block time */
-        GovernorSettings(43200 /* 1 day */, 302400 /* 1 week */, 0)
+        GovernorSettings(5 /* 10 seconds for now... */, 302400 /* 1 week */, 0)
         GovernorVotes(_vennDAOVendors)
         GovernorVotesQuorumFraction(4)
         GovernorTimelockControl(_timelock)
     {
         vennDAOVendors = IVennDAOVendors(address(_vennDAOVendors));
-    }
-
-    function castVote(
-        uint256 proposalId,
-        uint8 support
-    ) public override returns (uint256) {
-        // bool canVote = vennDAOVendors.isVoteEligible(msg.sender);
-        // TODO: Check if the voter is eligible to vote
-        address voter = _msgSender();
-        return _castVote(proposalId, voter, support, "");
     }
 
     // The following functions are overrides required by Solidity.

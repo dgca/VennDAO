@@ -3,9 +3,13 @@ import { useMutation } from "@tanstack/react-query";
 import { Address, parseEther } from "viem";
 import { usePublicClient, useWalletClient } from "wagmi";
 
-import { contractAddresses, DemoProject } from "contracts";
+import { DemoProject } from "contracts";
+
+import { getContractAddresses } from "../getContractAddresses";
 
 import { queryClient } from "@/queryClient";
+
+const contractAddresses = getContractAddresses();
 
 export function useMintBasedHam() {
   const publicClient = usePublicClient()!;
@@ -37,18 +41,24 @@ export function useMintBasedHam() {
         version: "x25519-xsalsa20-poly1305",
       });
 
-      const { request } = await publicClient.simulateContract({
-        address: contractAddresses.localhost.DemoProject,
-        abi: DemoProject,
-        functionName: "mint",
-        args: [JSON.stringify(encryptedFields) as Address],
-        value: parseEther("0.01"),
-      });
+      console.log(encryptedFields);
 
-      const txHash = await walletClient.data?.writeContract(request);
+      try {
+        const txHash = await walletClient.data?.writeContract({
+          account: walletClient.data?.account,
+          address: contractAddresses.DemoProject,
+          abi: DemoProject,
+          functionName: "mint",
+          args: [JSON.stringify(encryptedFields) as Address],
+          value: parseEther("0.01"),
+        });
 
-      await publicClient.waitForTransactionReceipt({ hash: txHash! });
-      queryClient.invalidateQueries();
+        await publicClient.waitForTransactionReceipt({ hash: txHash! });
+        queryClient.invalidateQueries();
+      } catch (err) {
+        console.error(err);
+        throw err;
+      }
     },
   });
 }

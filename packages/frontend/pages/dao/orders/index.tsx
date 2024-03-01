@@ -51,6 +51,13 @@ export default function Orders() {
                 )}
               </pre>
               <Button
+                onClick={() => {
+                  contracts.VennDAOOrders().updateOrderStatus(id, 1);
+                }}
+              >
+                Accept Order
+              </Button>
+              <Button
                 onClick={async () => {
                   const address = walletClient.data?.account.address;
                   if (!address) return;

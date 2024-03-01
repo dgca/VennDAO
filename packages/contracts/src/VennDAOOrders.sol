@@ -141,7 +141,7 @@ contract VennDAOOrders is IVennDAOOrders, Ownable {
             revert InvalidOrderStatus("Cannot set status to Expired");
         }
 
-        if (order.status != Status.Pending || order.status != Status.Accepted) {
+        if (order.status != Status.Pending && order.status != Status.Accepted) {
             revert InvalidOrderStatus("Order already reached terminal state");
         }
 

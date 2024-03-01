@@ -30,8 +30,7 @@ contract VennDAOVendors is
     address public ordersAddress;
 
     uint256 private nextTokenId;
-    /** Revenue (USDC) a vendor must meet in order to vote */
-    uint256 private voterRevenueThreshold = 1000 * 10 ** 6;
+
     mapping(uint256 => VendorMetadata) private metadataByTokenId;
 
     constructor(
@@ -78,14 +77,6 @@ contract VennDAOVendors is
     function updateMembershipFee(uint256 _newFee) public onlyOwner {
         membershipFee = _newFee;
         emit MembershipFeeUpdated(_newFee);
-    }
-
-    /**
-     * Returns whether or not a token has met the revenue threshold to vote
-     * @param _tokenId Token ID to check
-     */
-    function isVoteEligible(uint256 _tokenId) public view returns (bool) {
-        return metadataByTokenId[_tokenId].revenue > voterRevenueThreshold;
     }
 
     function tokenURI(
@@ -168,21 +159,6 @@ contract VennDAOVendors is
                     )
                 )
             );
-    }
-
-    function _getVotingUnits(
-        address account
-    ) internal view override returns (uint256) {
-        uint256[] memory tokenIds = getAllTokensByOwner(account);
-        uint256 votingUnits = 0;
-        // for each token that is follows condition: metadataByTokenId[_tokenId].revenue > voterRevenueThreshold
-        // increase voting unit
-        for (uint256 i = 0; i < tokenIds.length; i++) {
-            if (isVoteEligible(tokenIds[i])) {
-                votingUnits++;
-            }
-        }
-        return votingUnits;
     }
 
     // The following functions are overrides required by Solidity.

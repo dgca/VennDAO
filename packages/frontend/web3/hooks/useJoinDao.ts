@@ -3,8 +3,7 @@ import { useState } from "react";
 import { Address, parseUnits } from "viem";
 import { useAccount, usePublicClient } from "wagmi";
 
-import { contractAddresses } from "contracts";
-
+import { getContractAddresses } from "../getContractAddresses";
 import { useContracts } from "../WagmiContractsProvider";
 
 export type Steps = "pending" | "approve" | "join" | "success" | "error";
@@ -19,6 +18,8 @@ async function getEncryptionPublicKey(address: Address) {
   }
   return result;
 }
+
+const contractAddresses = getContractAddresses();
 
 export function useJoinDao() {
   const contracts = useContracts();
@@ -41,10 +42,7 @@ export function useJoinDao() {
 
       const [approveHash] = await contracts
         .MockUSDC()
-        .approve(
-          contractAddresses.localhost.VennDAOVendors,
-          parseUnits("50", 6),
-        );
+        .approve(contractAddresses.VennDAOVendors, parseUnits("50", 6));
       await publicClient.waitForTransactionReceipt({ hash: approveHash });
 
       const encryptionKey = await getEncryptionPublicKey(userAccount.address!);
