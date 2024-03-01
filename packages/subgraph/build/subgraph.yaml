@@ -1,0 +1,43 @@
+specVersion: 0.0.5
+schema:
+  file: schema.graphql
+dataSources:
+  - kind: ethereum
+    name: VennDAOOrders
+    network: base-sepolia
+    source:
+      address: "0xce02ed2ab7e804daa16ec752e13b62dc4bd1874c"
+      abi: VennDAOOrders
+      startBlock: 6746119
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - DaoFeeUpdated
+        - OrderFundsTransferred
+        - OrderPlaced
+        - OrderStatusUpdated
+        - OwnershipTransferred
+        - VendorRefundIssued
+        - VennDAOOrdersInitialized
+      abis:
+        - name: VennDAOOrders
+          file: VennDAOOrders/abis/VennDAOOrders.json
+      eventHandlers:
+        - event: DaoFeeUpdated(uint256)
+          handler: handleDaoFeeUpdated
+        - event: OrderFundsTransferred(indexed uint256,indexed address,uint256,uint256)
+          handler: handleOrderFundsTransferred
+        - event: OrderPlaced(indexed uint256,indexed uint256,indexed
+            address,uint256,address,uint256,uint8,uint256,string[],string)
+          handler: handleOrderPlaced
+        - event: OrderStatusUpdated(indexed uint256,indexed uint8)
+          handler: handleOrderStatusUpdated
+        - event: OwnershipTransferred(indexed address,indexed address)
+          handler: handleOwnershipTransferred
+        - event: VendorRefundIssued(indexed uint256,indexed address,uint256)
+          handler: handleVendorRefundIssued
+        - event: VennDAOOrdersInitialized(address,address,address)
+          handler: handleVennDAOOrdersInitialized
+      file: VennDAOOrders/VennDAOOrders.wasm
