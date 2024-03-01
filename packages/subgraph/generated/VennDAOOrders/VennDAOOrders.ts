@@ -209,7 +209,7 @@ export class VennDAOOrdersInitialized__Params {
 }
 
 export class VennDAOOrders__getOrdersResultValue0Struct extends ethereum.Tuple {
-  get id(): BigInt {
+  get orderId(): BigInt {
     return this[0].toBigInt();
   }
 
@@ -300,7 +300,7 @@ export class VennDAOOrders__ordersResult {
     return map;
   }
 
-  getId(): BigInt {
+  getOrderId(): BigInt {
     return this.value0;
   }
 

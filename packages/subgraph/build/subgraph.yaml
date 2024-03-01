@@ -1,6 +1,6 @@
 specVersion: 0.0.5
 schema:
-  file: ./schema.graphql
+  file: schema.graphql
 dataSources:
   - kind: ethereum
     name: VennDAOOrders
@@ -23,14 +23,14 @@ dataSources:
         - VennDAOOrdersInitialized
       abis:
         - name: VennDAOOrders
-          file: ./abis/VennDAOOrders.json
+          file: VennDAOOrders/abis/VennDAOOrders.json
       eventHandlers:
         - event: OrderPlaced(indexed uint256,indexed uint256,indexed
             address,uint256,address,uint256,uint8,uint256,string[],string)
           handler: handleOrderPlaced
         - event: OrderStatusUpdated(indexed uint256,indexed uint8)
           handler: handleOrderStatusUpdated
-      file: ./src/venn-dao-orders.ts
+      file: VennDAOOrders/VennDAOOrders.wasm
   - kind: ethereum
     name: VennDAOProducts
     network: base-sepolia
@@ -48,12 +48,12 @@ dataSources:
         - ProductCreated
       abis:
         - name: VennDAOProducts
-          file: ./abis/VennDAOProducts.json
+          file: VennDAOProducts/abis/VennDAOProducts.json
       eventHandlers:
         - event: ProductCreated(indexed
             uint256,bool,string,string,uint256,uint256,uint256,uint256,string[],string[])
           handler: handleProductCreated
-      file: ./src/venn-dao-products.ts
+      file: VennDAOProducts/VennDAOProducts.wasm
   - kind: ethereum
     name: VennDAOVendors
     network: base-sepolia
@@ -79,8 +79,8 @@ dataSources:
         - Transfer
       abis:
         - name: VennDAOVendors
-          file: ./abis/VennDAOVendors.json
+          file: VennDAOVendors/abis/VennDAOVendors.json
       eventHandlers:
         - event: NewVendorMember(indexed uint256,indexed address,string,string,string)
           handler: handleNewVendorMember
-      file: ./src/venn-dao-vendors.ts
+      file: VennDAOVendors/VennDAOVendors.wasm

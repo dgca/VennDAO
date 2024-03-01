@@ -1,0 +1,49 @@
+type Order @entity {
+  id: Bytes!
+  orderId: BigInt! # uint256
+  productId: BigInt! # uint256
+  placedBy: Bytes! # address
+  quantity: BigInt! # uint256
+  refundRecipient: Bytes! # address
+  orderTotal: BigInt! # uint256
+  status: Int! # uint8
+  createdAt: BigInt! # uint256
+  publicFields: [String!]! # string[]
+  encryptedFields: String! # string
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+  product: Product!
+}
+
+type Product @entity {
+  id: Bytes!
+  productId: BigInt! # uint256
+  active: Boolean! # bool
+  name: String! # string
+  description: String! # string
+  price: BigInt! # uint256
+  minOrderQuantity: BigInt! # uint256
+  maxOrderQuantity: BigInt! # uint256
+  vendorTokenId: BigInt! # uint256
+  publicFields: [String!]! # string[]
+  encryptedFields: [String!]! # string[]
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+  orders: [Order!]! @derivedFrom(field: "product")
+  vendor: Vendor!
+}
+
+type Vendor @entity(immutable: true) {
+  id: Bytes!
+  tokenId: BigInt! # uint256
+  member: Bytes! # address
+  name: String! # string
+  description: String! # string
+  website: String! # string
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+  products: [Product!]! @derivedFrom(field: "vendor")
+}

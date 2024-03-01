@@ -9,9 +9,9 @@ import {
 
 export function handleProductCreated(event: ProductCreatedEvent): void {
   const entity = new Product(
-    createEntityId("Product", event.params.id.toHexString()),
+    createEntityId("Product", event.params.productId.toHexString()),
   );
-  entity.productId = event.params.id;
+  entity.productId = event.params.productId;
   entity.active = event.params.active;
   entity.name = event.params.name;
   entity.description = event.params.description;
@@ -25,6 +25,11 @@ export function handleProductCreated(event: ProductCreatedEvent): void {
   entity.blockNumber = event.block.number;
   entity.blockTimestamp = event.block.timestamp;
   entity.transactionHash = event.transaction.hash;
+
+  entity.vendor = createEntityId(
+    "Vendor",
+    event.params.vendorTokenId.toHexString(),
+  );
 
   entity.save();
 }

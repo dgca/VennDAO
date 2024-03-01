@@ -45,7 +45,7 @@ export class ProductActiveStatusChanged__Params {
     this._event = event;
   }
 
-  get id(): BigInt {
+  get productId(): BigInt {
     return this._event.parameters[0].value.toBigInt();
   }
 
@@ -67,7 +67,7 @@ export class ProductCreated__Params {
     this._event = event;
   }
 
-  get id(): BigInt {
+  get productId(): BigInt {
     return this._event.parameters[0].value.toBigInt();
   }
 
@@ -109,7 +109,7 @@ export class ProductCreated__Params {
 }
 
 export class VennDAOProducts__getProductByIdResultValue0Struct extends ethereum.Tuple {
-  get id(): BigInt {
+  get productId(): BigInt {
     return this[0].toBigInt();
   }
 
@@ -151,7 +151,7 @@ export class VennDAOProducts__getProductByIdResultValue0Struct extends ethereum.
 }
 
 export class VennDAOProducts__getProductsByVendorIdResultValue0Struct extends ethereum.Tuple {
-  get id(): BigInt {
+  get productId(): BigInt {
     return this[0].toBigInt();
   }
 
@@ -235,7 +235,7 @@ export class VennDAOProducts__productsResult {
     return map;
   }
 
-  getId(): BigInt {
+  getProductId(): BigInt {
     return this.value0;
   }
 
@@ -311,7 +311,7 @@ export class VennDAOProducts__productsByVendorIdResult {
     return map;
   }
 
-  getId(): BigInt {
+  getProductId(): BigInt {
     return this.value0;
   }
 
