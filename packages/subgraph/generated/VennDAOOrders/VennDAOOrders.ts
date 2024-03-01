@@ -7,7 +7,7 @@ import {
   Entity,
   Bytes,
   Address,
-  BigInt
+  BigInt,
 } from "@graphprotocol/graph-ts";
 
 export class DaoFeeUpdated extends ethereum.Event {
@@ -270,7 +270,7 @@ export class VennDAOOrders__ordersResult {
     value5: BigInt,
     value6: i32,
     value7: BigInt,
-    value8: string
+    value8: string,
   ) {
     this.value0 = value0;
     this.value1 = value1;
@@ -293,7 +293,7 @@ export class VennDAOOrders__ordersResult {
     map.set("value5", ethereum.Value.fromUnsignedBigInt(this.value5));
     map.set(
       "value6",
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(this.value6))
+      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(this.value6)),
     );
     map.set("value7", ethereum.Value.fromUnsignedBigInt(this.value7));
     map.set("value8", ethereum.Value.fromString(this.value8));
@@ -348,8 +348,8 @@ export class VennDAOOrders extends ethereum.SmartContract {
       "calculateOrderTotal(uint256,uint256):(uint256)",
       [
         ethereum.Value.fromUnsignedBigInt(_productId),
-        ethereum.Value.fromUnsignedBigInt(_quantity)
-      ]
+        ethereum.Value.fromUnsignedBigInt(_quantity),
+      ],
     );
 
     return result[0].toBigInt();
@@ -357,15 +357,15 @@ export class VennDAOOrders extends ethereum.SmartContract {
 
   try_calculateOrderTotal(
     _productId: BigInt,
-    _quantity: BigInt
+    _quantity: BigInt,
   ): ethereum.CallResult<BigInt> {
     let result = super.tryCall(
       "calculateOrderTotal",
       "calculateOrderTotal(uint256,uint256):(uint256)",
       [
         ethereum.Value.fromUnsignedBigInt(_productId),
-        ethereum.Value.fromUnsignedBigInt(_quantity)
-      ]
+        ethereum.Value.fromUnsignedBigInt(_quantity),
+      ],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -393,7 +393,7 @@ export class VennDAOOrders extends ethereum.SmartContract {
     let result = super.call(
       "getOrders",
       "getOrders():((uint256,uint256,uint256,address,address,uint256,uint8,uint256,string[],string)[])",
-      []
+      [],
     );
 
     return result[0].toTupleArray<VennDAOOrders__getOrdersResultValue0Struct>();
@@ -405,14 +405,14 @@ export class VennDAOOrders extends ethereum.SmartContract {
     let result = super.tryCall(
       "getOrders",
       "getOrders():((uint256,uint256,uint256,address,address,uint256,uint8,uint256,string[],string)[])",
-      []
+      [],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(
-      value[0].toTupleArray<VennDAOOrders__getOrdersResultValue0Struct>()
+      value[0].toTupleArray<VennDAOOrders__getOrdersResultValue0Struct>(),
     );
   }
 
@@ -420,7 +420,7 @@ export class VennDAOOrders extends ethereum.SmartContract {
     let result = super.call(
       "orderAcceptanceWindow",
       "orderAcceptanceWindow():(uint256)",
-      []
+      [],
     );
 
     return result[0].toBigInt();
@@ -430,7 +430,7 @@ export class VennDAOOrders extends ethereum.SmartContract {
     let result = super.tryCall(
       "orderAcceptanceWindow",
       "orderAcceptanceWindow():(uint256)",
-      []
+      [],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -443,7 +443,7 @@ export class VennDAOOrders extends ethereum.SmartContract {
     let result = super.call(
       "orders",
       "orders(uint256):(uint256,uint256,uint256,address,address,uint256,uint8,uint256,string)",
-      [ethereum.Value.fromUnsignedBigInt(param0)]
+      [ethereum.Value.fromUnsignedBigInt(param0)],
     );
 
     return new VennDAOOrders__ordersResult(
@@ -455,7 +455,7 @@ export class VennDAOOrders extends ethereum.SmartContract {
       result[5].toBigInt(),
       result[6].toI32(),
       result[7].toBigInt(),
-      result[8].toString()
+      result[8].toString(),
     );
   }
 
@@ -463,7 +463,7 @@ export class VennDAOOrders extends ethereum.SmartContract {
     let result = super.tryCall(
       "orders",
       "orders(uint256):(uint256,uint256,uint256,address,address,uint256,uint8,uint256,string)",
-      [ethereum.Value.fromUnsignedBigInt(param0)]
+      [ethereum.Value.fromUnsignedBigInt(param0)],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -479,8 +479,8 @@ export class VennDAOOrders extends ethereum.SmartContract {
         value[5].toBigInt(),
         value[6].toI32(),
         value[7].toBigInt(),
-        value[8].toString()
-      )
+        value[8].toString(),
+      ),
     );
   }
 

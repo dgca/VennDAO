@@ -3,6 +3,12 @@
     "VennDAOOrders": {
       "address": "0xce02ed2ab7e804daa16ec752e13b62dc4bd1874c",
       "startBlock": 6746119
+    },
+    "Contract": {
+      "address": "0x1e24a3fb246ab0129487ccaf53e0e5835c76f082"
+    },
+    "VennDAOProducts": {
+      "address": "0x1e24a3fb246ab0129487ccaf53e0e5835c76f082"
     }
   }
 }

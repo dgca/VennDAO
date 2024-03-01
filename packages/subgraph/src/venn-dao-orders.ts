@@ -1,7 +1,10 @@
+import { Bytes } from "@graphprotocol/graph-ts"
+
+import { createEntityId } from "./utils"
 import {
   DaoFeeUpdated,
   OrderFundsTransferred,
-  OrderPlaced,
+  Order,
   OrderStatusUpdated,
   OwnershipTransferred,
   VendorRefundIssued,
@@ -49,8 +52,8 @@ export function handleOrderFundsTransferred(
 }
 
 export function handleOrderPlaced(event: OrderPlacedEvent): void {
-  const entity = new OrderPlaced(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
+  const entity = new Order(
+    createEntityId("Order", event.params.orderId.toHexString())
   )
   entity.orderId = event.params.orderId
   entity.productId = event.params.productId
@@ -66,6 +69,8 @@ export function handleOrderPlaced(event: OrderPlacedEvent): void {
   entity.blockNumber = event.block.number
   entity.blockTimestamp = event.block.timestamp
   entity.transactionHash = event.transaction.hash
+
+  entity.product = createEntityId("Product", event.params.productId.toHexString())
 
   entity.save()
 }

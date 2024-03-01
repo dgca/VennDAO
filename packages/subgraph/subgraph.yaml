@@ -29,7 +29,8 @@ dataSources:
           handler: handleDaoFeeUpdated
         - event: OrderFundsTransferred(indexed uint256,indexed address,uint256,uint256)
           handler: handleOrderFundsTransferred
-        - event: OrderPlaced(indexed uint256,indexed uint256,indexed address,uint256,address,uint256,uint8,uint256,string[],string)
+        - event: OrderPlaced(indexed uint256,indexed uint256,indexed
+            address,uint256,address,uint256,uint8,uint256,string[],string)
           handler: handleOrderPlaced
         - event: OrderStatusUpdated(indexed uint256,indexed uint8)
           handler: handleOrderStatusUpdated
@@ -40,3 +41,30 @@ dataSources:
         - event: VennDAOOrdersInitialized(address,address,address)
           handler: handleVennDAOOrdersInitialized
       file: ./src/venn-dao-orders.ts
+  - kind: ethereum
+    name: VennDAOProducts
+    network: base-sepolia
+    source:
+      address: "0x1e24a3fb246ab0129487ccaf53e0e5835c76f082"
+      abi: VennDAOProducts
+      startBlock: 6746115
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - VennDAOProductsOwnershipTransferred
+        - ProductActiveStatusChanged
+        - ProductCreated
+      abis:
+        - name: VennDAOProducts
+          file: ./abis/VennDAOProducts.json
+      eventHandlers:
+        - event: OwnershipTransferred(indexed address,indexed address)
+          handler: handleOwnershipTransferred
+        - event: ProductActiveStatusChanged(indexed uint256,bool)
+          handler: handleProductActiveStatusChanged
+        - event: ProductCreated(indexed
+            uint256,bool,string,string,uint256,uint256,uint256,uint256,string[],string[])
+          handler: handleProductCreated
+      file: ./src/venn-dao-products.ts
