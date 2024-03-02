@@ -21,31 +21,15 @@ contract DemoProject is ERC721, Ownable {
         usdcContract = _usdcContract;
     }
 
-    function _placeOrder() internal {
-        uint256 productId = 0;
-        uint256 quantity = 1;
-        address refundRecipient = msg.sender;
-        string[] memory publicFields = new string[](1);
-        publicFields[0] = "https://foo.com/cool-image.png";
-        string memory encryptedFields = "0x1234...";
-
-        vennDAO.placeOrder(
-            productId,
-            quantity,
-            refundRecipient,
-            publicFields,
-            encryptedFields
-        );
-    }
-
-    function mint(string memory encryptedFields) public payable {
+    function mint(
+        uint256 productId,
+        string memory encryptedFields
+    ) public payable {
         if (msg.value != 0.01 ether) {
             revert("Must send 0.01 ETH to mint");
         }
 
-        uint256 productId = 0;
         uint256 quantity = 1;
-
         string[] memory publicFields = new string[](1);
         publicFields[0] = "https://i.imgur.com/u8WH6wZ.png";
 

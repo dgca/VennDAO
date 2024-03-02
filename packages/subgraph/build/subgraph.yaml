@@ -6,7 +6,7 @@ dataSources:
     name: VennDAOOrders
     network: base-sepolia
     source:
-      address: "0x8c2e4aaae366a6a32319a6569ad753a9d159e6c9"
+      address: "0x5d78bfa1c1e86ca35d4679357d46412029306bd2"
       abi: VennDAOOrders
       startBlock: 6746119
     mapping:
@@ -35,7 +35,7 @@ dataSources:
     name: VennDAOProducts
     network: base-sepolia
     source:
-      address: "0x1a7e4c987b25aa8539ef7dc38d63b758f6052ff5"
+      address: "0xf2b9298847613f35e3685dda819e62c27cfa3b09"
       abi: VennDAOProducts
       startBlock: 6746115
     mapping:
@@ -58,7 +58,7 @@ dataSources:
     name: VennDAOVendors
     network: base-sepolia
     source:
-      address: "0xd2ce7a7b0c4fe8766f7ae9f29daabd3826632946"
+      address: "0x51002a54ca965620f1c8028e75fe6740f42a13ca"
       abi: VennDAOVendors
       startBlock: 6776725
     mapping:

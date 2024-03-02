@@ -46,7 +46,7 @@ export function useMintBasedHam() {
           address: contractAddresses.DemoProject,
           abi: DemoProject,
           functionName: "mint",
-          args: [JSON.stringify(encryptedFields) as Address],
+          args: [BigInt(1), JSON.stringify(encryptedFields) as Address],
           value: parseEther("0.01"),
         });
 

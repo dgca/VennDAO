@@ -31,10 +31,7 @@ const query = graphql(`
 `);
 
 export default function Vendors() {
-  const contracts = useContracts();
-  const account = useAccount();
-
-  const { data: ordersData } = useQuery({
+  const { data: vendorProductsData } = useQuery({
     queryKey: ["VendorsIncludeProducts"],
     queryFn: async () => {
       const data = await request(
@@ -45,28 +42,9 @@ export default function Vendors() {
     },
   });
 
-  const userVendorTokens = contracts
-    .VennDAOVendors()
-    .getAllTokensByOwner.useRead({
-      args: [account.address!],
-      query: {
-        enabled: !!account.address,
-      },
-    });
-
-  const vendorTokenId = userVendorTokens.data?.at(0);
-  const hasVendorTokenId = typeof vendorTokenId === "bigint";
-
-  const vendorProducts = contracts
-    .VennDAOProducts()
-    .getProductsByVendorId.useRead({
-      args: [vendorTokenId!],
-      query: {
-        enabled: hasVendorTokenId,
-      },
-    });
-
-  if (!hasVendorTokenId) return null;
+  const hasProducts = vendorProductsData?.vendors.some(
+    (vendor) => vendor.products.length > 0,
+  );
 
   return (
     <MainLayout>
@@ -75,7 +53,7 @@ export default function Vendors() {
         <Text.Plain as="p" className="my-4">
           Check out our vendors and the products they offer 👇
         </Text.Plain>
-        {ordersData?.vendors.map((vendor, i) => {
+        {vendorProductsData?.vendors.map((vendor, i) => {
           return (
             <div className="w-full mb-8 border-b border-muted" key={i}>
               <div className="flex flex-col mb-4">
@@ -153,7 +131,7 @@ export default function Vendors() {
             </div>
           );
         })}
-        {vendorProducts.data?.length === 0 && (
+        {!hasProducts && (
           <Text.P>Huh, no one has added any products yet...</Text.P>
         )}
       </div>

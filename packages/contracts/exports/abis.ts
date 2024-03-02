@@ -322,6 +322,11 @@ export const DemoProject = [
   {
     "inputs": [
       {
+        "internalType": "uint256",
+        "name": "productId",
+        "type": "uint256"
+      },
+      {
         "internalType": "string",
         "name": "encryptedFields",
         "type": "string"
