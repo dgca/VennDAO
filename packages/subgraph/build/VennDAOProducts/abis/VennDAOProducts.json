@@ -2,7 +2,7 @@
   {
     "inputs": [
       {
-        "internalType": "contract IERC721",
+        "internalType": "contract IVennDAOVendors",
         "name": "_vendorsContract",
         "type": "address"
       },
@@ -208,12 +208,12 @@
         "type": "uint256"
       }
     ],
-    "name": "getOwnerAddressByProductId",
+    "name": "getEncryptionKeyByProductId",
     "outputs": [
       {
-        "internalType": "address",
+        "internalType": "string",
         "name": "",
-        "type": "address"
+        "type": "string"
       }
     ],
     "stateMutability": "view",

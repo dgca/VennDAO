@@ -349,29 +349,29 @@ export class VennDAOProducts extends ethereum.SmartContract {
     return new VennDAOProducts("VennDAOProducts", address);
   }
 
-  getOwnerAddressByProductId(_productId: BigInt): Address {
+  getEncryptionKeyByProductId(_productId: BigInt): string {
     let result = super.call(
-      "getOwnerAddressByProductId",
-      "getOwnerAddressByProductId(uint256):(address)",
+      "getEncryptionKeyByProductId",
+      "getEncryptionKeyByProductId(uint256):(string)",
       [ethereum.Value.fromUnsignedBigInt(_productId)],
     );
 
-    return result[0].toAddress();
+    return result[0].toString();
   }
 
-  try_getOwnerAddressByProductId(
+  try_getEncryptionKeyByProductId(
     _productId: BigInt,
-  ): ethereum.CallResult<Address> {
+  ): ethereum.CallResult<string> {
     let result = super.tryCall(
-      "getOwnerAddressByProductId",
-      "getOwnerAddressByProductId(uint256):(address)",
+      "getEncryptionKeyByProductId",
+      "getEncryptionKeyByProductId(uint256):(string)",
       [ethereum.Value.fromUnsignedBigInt(_productId)],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
     }
     let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toAddress());
+    return ethereum.CallResult.fromValue(value[0].toString());
   }
 
   getProductById(

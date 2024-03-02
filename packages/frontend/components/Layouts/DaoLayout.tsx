@@ -17,8 +17,8 @@ const sidebarNavItems = [
     href: "/dao/products",
   },
   {
-    title: "Proposals",
-    href: "/dao/proposals",
+    title: "Proposals 🔗",
+    href: "https://www.tally.xyz/gov/venndao2",
   },
 ];
 
@@ -44,6 +44,8 @@ function SidebarNav({ className, items, ...props }: SidebarNavProps) {
         <Link
           key={item.href}
           href={item.href}
+          target={item.href.startsWith("http") ? "_blank" : undefined}
+          rel="noreferer"
           className={cn(
             buttonVariants({ variant: "ghost" }),
             router.pathname.startsWith(item.href)
@@ -62,11 +64,11 @@ function SidebarNav({ className, items, ...props }: SidebarNavProps) {
 export function DaoLayout({ children }: { children: ReactNode }) {
   return (
     <MainLayout includeFooter={false}>
-      <div className="flex flex-grow flex-col lg:flex-row gap-4 min-h-full">
-        <aside className="p-4 lg:w-80 lg:border-r">
+      <div className="flex flex-grow flex-col gap-4 h-full lg:flex-row">
+        <aside className="p-4 max-h-full lg:w-80 lg:border-r">
           <SidebarNav items={sidebarNavItems} />
         </aside>
-        <div className="container px-4 py-12 max-w-6xl mx-auto">
+        <div className="container px-4 py-12 max-w-6xl mx-auto overflow-auto">
           <div>{children}</div>
         </div>
       </div>

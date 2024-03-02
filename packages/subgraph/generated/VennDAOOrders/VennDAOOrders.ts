@@ -91,16 +91,16 @@ export class OrderPlaced__Params {
     return this._event.parameters[4].value.toAddress();
   }
 
-  get orderTotal(): BigInt {
+  get orderSubtotal(): BigInt {
     return this._event.parameters[5].value.toBigInt();
   }
 
-  get status(): i32 {
-    return this._event.parameters[6].value.toI32();
+  get daoFee(): BigInt {
+    return this._event.parameters[6].value.toBigInt();
   }
 
-  get createdAt(): BigInt {
-    return this._event.parameters[7].value.toBigInt();
+  get status(): i32 {
+    return this._event.parameters[7].value.toI32();
   }
 
   get publicFields(): Array<string> {

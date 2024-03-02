@@ -30,7 +30,6 @@ contract VennDAOVendors is
     address public ordersAddress;
 
     uint256 private nextTokenId;
-
     mapping(uint256 => VendorMetadata) private metadataByTokenId;
 
     constructor(
@@ -98,7 +97,8 @@ contract VennDAOVendors is
             _buildMetadata(
                 metadataByTokenId[tokenId].name,
                 metadataByTokenId[tokenId].description,
-                metadataByTokenId[tokenId].website
+                metadataByTokenId[tokenId].website,
+                metadataByTokenId[tokenId].encryptionKey
             );
     }
 
@@ -130,6 +130,12 @@ contract VennDAOVendors is
         return ownedTokenIds;
     }
 
+    function getMetadataByTokenId(
+        uint256 _tokenId
+    ) public view returns (VendorMetadata memory) {
+        return metadataByTokenId[_tokenId];
+    }
+
     function _assertOrdersContract() internal view {
         if (msg.sender != ordersAddress) {
             revert OnlyOrdersContract();
@@ -148,7 +154,8 @@ contract VennDAOVendors is
     function _buildMetadata(
         string memory _name,
         string memory _description,
-        string memory _website
+        string memory _website,
+        string memory _encryptionKey
     ) internal pure returns (string memory) {
         return
             string(
@@ -165,6 +172,9 @@ contract VennDAOVendors is
                             '",',
                             '"website": "',
                             _website,
+                            '",',
+                            '"encryptionKey": "',
+                            _encryptionKey,
                             '"',
                             "}"
                         )

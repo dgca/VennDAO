@@ -153,7 +153,13 @@
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "orderTotal",
+        "name": "orderSubtotal",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "daoFee",
         "type": "uint256"
       },
       {
@@ -161,12 +167,6 @@
         "internalType": "enum IVennDAOOrders.Status",
         "name": "status",
         "type": "uint8"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "createdAt",
-        "type": "uint256"
       },
       {
         "indexed": false,

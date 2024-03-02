@@ -758,6 +758,52 @@
     "inputs": [
       {
         "internalType": "uint256",
+        "name": "_tokenId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getMetadataByTokenId",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "description",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "website",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "encryptionKey",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "revenue",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct VendorMetadata",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
         "name": "timepoint",
         "type": "uint256"
       }

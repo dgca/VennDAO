@@ -39,9 +39,9 @@ interface IVennDAOOrders {
         address indexed placedBy,
         uint256 quantity,
         address refundRecipient,
-        uint256 orderTotal,
+        uint256 orderSubtotal,
+        uint256 daoFee,
         Status status,
-        uint256 createdAt,
         string[] publicFields,
         string encryptedFields
     );

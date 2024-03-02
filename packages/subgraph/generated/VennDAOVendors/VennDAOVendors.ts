@@ -332,6 +332,28 @@ export class VennDAOVendors__eip712DomainResult {
   }
 }
 
+export class VennDAOVendors__getMetadataByTokenIdResultValue0Struct extends ethereum.Tuple {
+  get name(): string {
+    return this[0].toString();
+  }
+
+  get description(): string {
+    return this[1].toString();
+  }
+
+  get website(): string {
+    return this[2].toString();
+  }
+
+  get encryptionKey(): string {
+    return this[3].toString();
+  }
+
+  get revenue(): BigInt {
+    return this[4].toBigInt();
+  }
+}
+
 export class VennDAOVendors extends ethereum.SmartContract {
   static bind(address: Address): VennDAOVendors {
     return new VennDAOVendors("VennDAOVendors", address);
@@ -488,6 +510,39 @@ export class VennDAOVendors extends ethereum.SmartContract {
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(value[0].toAddress());
+  }
+
+  getMetadataByTokenId(
+    _tokenId: BigInt,
+  ): VennDAOVendors__getMetadataByTokenIdResultValue0Struct {
+    let result = super.call(
+      "getMetadataByTokenId",
+      "getMetadataByTokenId(uint256):((string,string,string,string,uint256))",
+      [ethereum.Value.fromUnsignedBigInt(_tokenId)],
+    );
+
+    return changetype<VennDAOVendors__getMetadataByTokenIdResultValue0Struct>(
+      result[0].toTuple(),
+    );
+  }
+
+  try_getMetadataByTokenId(
+    _tokenId: BigInt,
+  ): ethereum.CallResult<VennDAOVendors__getMetadataByTokenIdResultValue0Struct> {
+    let result = super.tryCall(
+      "getMetadataByTokenId",
+      "getMetadataByTokenId(uint256):((string,string,string,string,uint256))",
+      [ethereum.Value.fromUnsignedBigInt(_tokenId)],
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(
+      changetype<VennDAOVendors__getMetadataByTokenIdResultValue0Struct>(
+        value[0].toTuple(),
+      ),
+    );
   }
 
   getPastTotalSupply(timepoint: BigInt): BigInt {

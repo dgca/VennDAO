@@ -6,7 +6,7 @@ dataSources:
     name: VennDAOOrders
     network: base-sepolia
     source:
-      address: "0xdb54cb1977c34bde2fb716ec03aad7477ad3dce4"
+      address: "0x294178884589af64db092eaf6986d499f7799bf8"
       abi: VennDAOOrders
       startBlock: 6746119
     mapping:
@@ -26,7 +26,7 @@ dataSources:
           file: ./abis/VennDAOOrders.json
       eventHandlers:
         - event: OrderPlaced(indexed uint256,indexed uint256,indexed
-            address,uint256,address,uint256,uint8,uint256,string[],string)
+            address,uint256,address,uint256,uint256,uint8,string[],string)
           handler: handleOrderPlaced
         - event: OrderStatusUpdated(indexed uint256,indexed uint8)
           handler: handleOrderStatusUpdated
@@ -35,7 +35,7 @@ dataSources:
     name: VennDAOProducts
     network: base-sepolia
     source:
-      address: "0xa19d31154b191aaf1b1708ecab05522ce41c93bd"
+      address: "0xa27cea5cf11fa44fbc577fb27349bf4edbc9264c"
       abi: VennDAOProducts
       startBlock: 6746115
     mapping:
@@ -58,7 +58,7 @@ dataSources:
     name: VennDAOVendors
     network: base-sepolia
     source:
-      address: "0xa7f50c70d5b9354d633b59044de0de362281705f"
+      address: "0x7934df1de14a1c00c5c9b7b1557416b705dde640"
       abi: VennDAOVendors
       startBlock: 6776725
     mapping:

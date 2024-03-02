@@ -1,7 +1,5 @@
 import { createEntityId } from "./utils";
-import {
-  Order,
-} from "../generated/schema";
+import { Order } from "../generated/schema";
 import {
   OrderPlaced as OrderPlacedEvent,
   OrderStatusUpdated as OrderStatusUpdatedEvent,
@@ -16,9 +14,10 @@ export function handleOrderPlaced(event: OrderPlacedEvent): void {
   entity.placedBy = event.params.placedBy;
   entity.quantity = event.params.quantity;
   entity.refundRecipient = event.params.refundRecipient;
-  entity.orderTotal = event.params.orderTotal;
+  entity.orderSubtotal = event.params.orderSubtotal;
+  entity.daoFee = event.params.daoFee;
+  entity.orderTotal = event.params.orderSubtotal.plus(event.params.daoFee);
   entity.status = event.params.status;
-  entity.createdAt = event.params.createdAt;
   entity.publicFields = event.params.publicFields;
   entity.encryptedFields = event.params.encryptedFields;
 
@@ -35,7 +34,9 @@ export function handleOrderPlaced(event: OrderPlacedEvent): void {
 }
 
 export function handleOrderStatusUpdated(event: OrderStatusUpdatedEvent): void {
-  const entity = Order.load(createEntityId("Order", event.params.orderId.toHexString()))!;
+  const entity = Order.load(
+    createEntityId("Order", event.params.orderId.toHexString()),
+  )!;
   entity.status = event.params.newStatus;
   entity.save();
 }

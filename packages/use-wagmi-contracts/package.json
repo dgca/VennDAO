@@ -19,5 +19,8 @@
   "license": "ISC",
   "devDependencies": {
     "type-fest": "^4.10.2"
+  },
+  "dependencies": {
+    "abitype": "^1.0.0"
   }
 }

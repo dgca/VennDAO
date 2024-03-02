@@ -83,9 +83,8 @@ contract VennDAOOrders is IVennDAOOrders, Ownable {
             revert InvalidOrderQuantity();
         }
 
-        uint256 orderSubtotal = product.price * _quantity;
-        uint256 daoFeeAmount = _calculateFee(orderSubtotal);
-        uint256 orderTotal = orderSubtotal + daoFeeAmount;
+        uint256 daoFeeAmount = _calculateFee(product.price * _quantity);
+        uint256 orderTotal = product.price * _quantity + daoFeeAmount;
 
         bool transferSuccess = vendorsContract.usdcContract().transferFrom(
             msg.sender,
@@ -96,6 +95,19 @@ contract VennDAOOrders is IVennDAOOrders, Ownable {
         if (!transferSuccess) {
             revert PaymentFailed();
         }
+
+        emit OrderPlaced(
+            orders.length,
+            _productId,
+            msg.sender,
+            _quantity,
+            _refundRecipient,
+            orderTotal - daoFeeAmount,
+            daoFeeAmount,
+            Status.Pending,
+            _publicFields,
+            _encryptedFields
+        );
 
         // Create order
         orders.push(
@@ -111,19 +123,6 @@ contract VennDAOOrders is IVennDAOOrders, Ownable {
                 publicFields: _publicFields,
                 encryptedFields: _encryptedFields
             })
-        );
-
-        emit OrderPlaced(
-            orders.length,
-            _productId,
-            msg.sender,
-            _quantity,
-            _refundRecipient,
-            orderTotal,
-            Status.Pending,
-            block.timestamp,
-            _publicFields,
-            _encryptedFields
         );
     }
 

@@ -1,4 +1,3 @@
-import { encrypt } from "@metamask/eth-sig-util";
 import { useMutation } from "@tanstack/react-query";
 import { Address, parseEther } from "viem";
 import { usePublicClient, useWalletClient } from "wagmi";
@@ -6,12 +5,15 @@ import { usePublicClient, useWalletClient } from "wagmi";
 import { DemoProject } from "contracts";
 
 import { getContractAddresses } from "../getContractAddresses";
+import { useContracts } from "../WagmiContractsProvider";
 
 import { queryClient } from "@/queryClient";
+import { encrypt } from "@/utils/encrypt";
 
 const contractAddresses = getContractAddresses();
 
 export function useMintBasedHam() {
+  const contracts = useContracts();
   const publicClient = usePublicClient()!;
   const walletClient = useWalletClient();
 
@@ -29,19 +31,14 @@ export function useMintBasedHam() {
     }) => {
       const orderFields = JSON.stringify([address, city, state, postalCode]);
 
-      console.log({
-        publicKey: "mtrHp1WHZM9rxF2Ilot9Hie5XmQcKCf7oDQ1DpGkTSI=",
-        data: orderFields,
-        version: "x25519-xsalsa20-poly1305",
-      });
+      const encryptionKey = await contracts
+        .VennDAOProducts()
+        .getEncryptionKeyByProductId(BigInt(0));
 
       const encryptedFields = encrypt({
-        publicKey: "mtrHp1WHZM9rxF2Ilot9Hie5XmQcKCf7oDQ1DpGkTSI=",
+        publicKey: encryptionKey,
         data: orderFields,
-        version: "x25519-xsalsa20-poly1305",
       });
-
-      console.log(encryptedFields);
 
       try {
         const txHash = await walletClient.data?.writeContract({

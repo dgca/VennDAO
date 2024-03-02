@@ -51,7 +51,7 @@ export function useJoinDao() {
 
       const [joinHash] = await contracts
         .VennDAOVendors()
-        .joinDAO(name, website, description, encryptionKey);
+        .joinDAO(name, description, website, encryptionKey);
 
       await publicClient.waitForTransactionReceipt({ hash: joinHash });
 

@@ -36,4 +36,8 @@ interface IVennDAOVendors is IERC721 {
     function increaseVendorRevenue(uint256 _tokenId, uint256 _amount) external;
 
     function decreaseVendorRevenue(uint256 _tokenId, uint256 _amount) external;
+
+    function getMetadataByTokenId(
+        uint256 _tokenId
+    ) external view returns (VendorMetadata memory);
 }

@@ -5,16 +5,6 @@ import { Button, Text } from "ui-kit";
 
 import { MainLayout } from "@/components/Layouts/MainLayout";
 
-// # Hero Section
-
-// ## **Unlock New Opportunities in the Web3 World**
-// *Offer your products and services directly to cutting-edge web3 projects and open up a new, dynamic revenue stream.*
-
-// ### **Why Join VennDAO as a Vendor?**
-// *Gain unparalleled access to a growing ecosystem of web3 projects in need of your unique products and services. From custom goods to digital solutions, connect with clients you won't find anywhere else—all on a secure and transparent platform.*
-
-// [**Join as a Vendor**](#how-to-join) [**Learn More**](#about-venndao)
-
 export default function Home() {
   const router = useRouter();
   return (

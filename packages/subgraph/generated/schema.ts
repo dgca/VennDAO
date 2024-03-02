@@ -117,6 +117,32 @@ export class Order extends Entity {
     this.set("refundRecipient", Value.fromBytes(value));
   }
 
+  get orderSubtotal(): BigInt {
+    let value = this.get("orderSubtotal");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set orderSubtotal(value: BigInt) {
+    this.set("orderSubtotal", Value.fromBigInt(value));
+  }
+
+  get daoFee(): BigInt {
+    let value = this.get("daoFee");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set daoFee(value: BigInt) {
+    this.set("daoFee", Value.fromBigInt(value));
+  }
+
   get orderTotal(): BigInt {
     let value = this.get("orderTotal");
     if (!value || value.kind == ValueKind.NULL) {
@@ -141,19 +167,6 @@ export class Order extends Entity {
 
   set status(value: i32) {
     this.set("status", Value.fromI32(value));
-  }
-
-  get createdAt(): BigInt {
-    let value = this.get("createdAt");
-    if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
-    } else {
-      return value.toBigInt();
-    }
-  }
-
-  set createdAt(value: BigInt) {
-    this.set("createdAt", Value.fromBigInt(value));
   }
 
   get publicFields(): Array<string> {

@@ -1,21 +1,21 @@
 import { useQuery } from "@tanstack/react-query";
 import { request } from "graphql-request";
-import { useToggle } from "usehooks-ts";
 import { formatUnits } from "viem";
-import { useAccount, useWalletClient } from "wagmi";
+import { useAccount } from "wagmi";
 
-import { Card, Text, Button, Badge } from "ui-kit";
+import { Card, Text, Badge } from "ui-kit";
 
-import { CreateProductModal } from "@/components/CreateProductModal/CreateProductModal";
-import { DaoLayout } from "@/components/Layouts/DaoLayout";
+import { MainLayout } from "@/components/Layouts/MainLayout";
 import { graphql } from "@/gql";
 import { useContracts } from "@/web3/WagmiContractsProvider";
 
 const query = graphql(`
-  query ProductsByMember($member: Bytes) {
-    vendors(where: { member: $member }) {
+  query AllProducts {
+    vendors {
       name
-      products {
+      website
+      description
+      products(where: { active: true }) {
         productId
         productId
         active
@@ -34,19 +34,13 @@ const query = graphql(`
 export default function Products() {
   const contracts = useContracts();
   const account = useAccount();
-  const [isCreateModalOpen, toggleCreateModal] = useToggle();
-
-  const walletClient = useWalletClient();
 
   const { data: ordersData } = useQuery({
-    queryKey: ["ProductsByMember", walletClient.data?.account.address],
+    queryKey: ["AllProducts"],
     queryFn: async () => {
       const data = await request(
         "https://api.studio.thegraph.com/query/67001/venndao-sepolia/version/latest",
         query,
-        {
-          member: walletClient.data?.account.address,
-        },
       );
       return data;
     },
@@ -76,21 +70,20 @@ export default function Products() {
   if (!hasVendorTokenId) return null;
 
   return (
-    <>
-      <DaoLayout>
-        <div className="flex justify-between">
-          <Text.H2 as="h1" className="leading-relaxed">
-            Products
-          </Text.H2>
-          <Button onClick={toggleCreateModal}>Create</Button>
-        </div>
+    <MainLayout>
+      <div className="container px-4 py-12 max-w-2xl mx-auto">
+        <Text.H2 as="h1">Browse Products</Text.H2>
+        <Text.Plain as="p" className="my-4">
+          Browse a collection of products offered by the VennDAO community.
+          <br />
+          Submit orders for any of these prodcuts onchain.
+        </Text.Plain>
         {ordersData?.vendors.flatMap((vendor) => {
           return vendor.products.map(
             ({
               productId,
               name,
               price,
-              active,
               minOrderQuantity,
               maxOrderQuantity,
               publicFields,
@@ -103,16 +96,27 @@ export default function Products() {
                     <Text.Large>{name}</Text.Large>
                     <Text.Muted>(id: {Number(productId)})</Text.Muted>
                   </div>
-                  <Button>Edit</Button>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Text.Muted>Vendor:</Text.Muted>
+                  <Text.Plain>{vendor.name}</Text.Plain>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Text.Muted>Website:</Text.Muted>
+                  <Text.Plain>{vendor.website}</Text.Plain>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Text.Muted>Descrition:</Text.Muted>
+                  <Text.Plain>{vendor.description}</Text.Plain>
                 </div>
                 <div className="grid grid-cols-2 my-2">
                   <div className="flex items-center gap-2">
-                    <Text.Muted>Price:</Text.Muted>
-                    <Text.Plain>{formatUnits(price, 6)} USDC</Text.Plain>
+                    <Text.Muted>Vendor:</Text.Muted>
+                    <Text.Plain>{vendor.name}</Text.Plain>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Text.Muted>Active:</Text.Muted>
-                    <Text.Plain>{active.toString()}</Text.Plain>
+                    <Text.Muted>Price:</Text.Muted>
+                    <Text.Plain>{formatUnits(price, 6)} USDC</Text.Plain>
                   </div>
                   <div className="flex items-center gap-2">
                     <Text.Muted>Min Order Quantity:</Text.Muted>
@@ -160,17 +164,9 @@ export default function Products() {
           );
         })}
         {vendorProducts.data?.length === 0 && (
-          <Text.P>
-            You don&apos;t have any products. Create one to get started.
-          </Text.P>
+          <Text.P>Huh, no one has added any products yet...</Text.P>
         )}
-      </DaoLayout>
-      {isCreateModalOpen && (
-        <CreateProductModal
-          vendorTokenId={vendorTokenId}
-          onClose={toggleCreateModal}
-        />
-      )}
-    </>
+      </div>
+    </MainLayout>
   );
 }

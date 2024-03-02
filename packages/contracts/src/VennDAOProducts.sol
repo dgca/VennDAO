@@ -7,6 +7,7 @@ import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/utils/Base64.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "./IVennDAOProducts.sol";
+import "./IVennDAOVendors.sol";
 
 // @todo: Upgradable contract
 contract VennDAOProducts is Ownable, IVennDAOProducts {
@@ -16,10 +17,10 @@ contract VennDAOProducts is Ownable, IVennDAOProducts {
     // @todo: This is temporary while we figure out Subgraph stuff
     mapping(uint256 => Product[]) public productsByVendorId;
 
-    IERC721 private vendorsContract;
+    IVennDAOVendors private vendorsContract;
 
     constructor(
-        IERC721 _vendorsContract,
+        IVennDAOVendors _vendorsContract,
         address _initialOwner
     ) Ownable(_initialOwner) {
         vendorsContract = _vendorsContract;
@@ -71,8 +72,8 @@ contract VennDAOProducts is Ownable, IVennDAOProducts {
             _minOrderQuantity,
             _maxOrderQuantity,
             _vendorTokenId,
-            _encryptedFields,
-            _publicFields
+            _publicFields,
+            _encryptedFields
         );
     }
 
@@ -91,10 +92,12 @@ contract VennDAOProducts is Ownable, IVennDAOProducts {
         return productsByVendorId[_vendorTokenId];
     }
 
-    function getOwnerAddressByProductId(
+    function getEncryptionKeyByProductId(
         uint256 _productId
-    ) external view returns (address) {
-        return vendorsContract.ownerOf(products[_productId].vendorTokenId);
+    ) external view returns (string memory) {
+        uint256 vendorTokenId = products[_productId].vendorTokenId;
+        return
+            vendorsContract.getMetadataByTokenId(vendorTokenId).encryptionKey;
     }
 
     /** Asserts that the caller owns the given token ID */

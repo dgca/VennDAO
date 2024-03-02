@@ -1,19 +1,22 @@
+/* eslint-disable @next/next/no-img-element */
 import { useQuery } from "@tanstack/react-query";
-import { gql, request } from "graphql-request";
+import { request } from "graphql-request";
 import { useWalletClient } from "wagmi";
 
-import { Button, Card, Text } from "ui-kit";
+import { Text } from "ui-kit";
 
 import { DaoLayout } from "@/components/Layouts/DaoLayout";
-import { decryptFields } from "@/utils/decryptFields";
-import { useContracts } from "@/web3/WagmiContractsProvider";
+import { VendorOrderCard } from "@/components/VendorOrderCard/VendorOrderCard";
+import { graphql } from "@/gql";
 
-const query = gql`
-  query Orders($member: Bytes) {
+const query = graphql(`
+  query OrdersByMember($member: Bytes) {
     vendors(where: { member: $member }) {
       tokenId
       products {
         name
+        publicFields
+        encryptedFields
         orders {
           orderId
           quantity
@@ -25,16 +28,13 @@ const query = gql`
       }
     }
   }
-`;
+`);
 
 export default function Orders() {
   const walletClient = useWalletClient();
-  const contracts = useContracts();
-
-  const orders = contracts.VennDAOOrders().getOrders.useRead();
 
   const { data: ordersData } = useQuery({
-    queryKey: ["orders", walletClient.data?.account.address],
+    queryKey: ["OrdersByMember", walletClient.data?.account.address],
     queryFn: async () => {
       const data = await request(
         "https://api.studio.thegraph.com/query/67001/venndao-sepolia/version/latest",
@@ -47,71 +47,36 @@ export default function Orders() {
     },
   });
 
-  console.log(ordersData);
+  const ordersContent = ordersData?.vendors.flatMap((vendor) => {
+    return vendor.products.flatMap((product) => {
+      return product.orders.map((order) => (
+        <VendorOrderCard
+          key={order.orderId}
+          orderId={order.orderId}
+          productName={product.name}
+          status={order.status}
+          quantity={order.quantity}
+          orderTotal={order.orderTotal}
+          publicFields={product.publicFields}
+          publicFieldValues={order.publicFields}
+          encryptedFields={product.encryptedFields}
+          encryptedFieldsData={order.encryptedFields}
+        />
+      ));
+    });
+  });
 
   return (
     <DaoLayout>
       <Text.H2 as="h1" className="leading-relaxed">
         Orders
       </Text.H2>
-      {orders.data?.map(
-        ({
-          orderId,
-          productId,
-          quantity,
-          placedBy,
-          refundRecipient,
-          orderTotal,
-          status,
-          createdAt,
-          publicFields,
-          encryptedFields,
-        }) => {
-          return (
-            <Card key={Number(orderId)}>
-              <pre>
-                {JSON.stringify(
-                  {
-                    id: Number(orderId),
-                    productId: Number(productId),
-                    quantity: Number(quantity),
-                    placedBy,
-                    refundRecipient,
-                    orderTotal: Number(orderTotal),
-                    status,
-                    createdAt: Number(createdAt),
-                    publicFields,
-                    encryptedFields,
-                  },
-                  null,
-                  2,
-                )}
-              </pre>
-              <Button
-                onClick={() => {
-                  contracts.VennDAOOrders().updateOrderStatus(orderId, 1);
-                }}
-              >
-                Accept Order
-              </Button>
-              <Button
-                onClick={async () => {
-                  const address = walletClient.data?.account.address;
-                  if (!address) return;
-                  console.log(encryptedFields);
-                  const decryptedFields = await decryptFields(
-                    encryptedFields,
-                    address,
-                  );
-                  console.log(JSON.parse(decryptedFields));
-                }}
-              >
-                Decrypt Fields
-              </Button>
-            </Card>
-          );
-        },
+      {!ordersContent?.length && (
+        <Text.Muted className="mt-4 text-center">
+          No orders found for your account
+        </Text.Muted>
       )}
+      {ordersContent}
     </DaoLayout>
   );
 }

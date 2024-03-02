@@ -5,9 +5,10 @@ type Order @entity {
   placedBy: Bytes! # address
   quantity: BigInt! # uint256
   refundRecipient: Bytes! # address
+  orderSubtotal: BigInt! # uint256
+  daoFee: BigInt! # uint256
   orderTotal: BigInt! # uint256
   status: Int! # uint8
-  createdAt: BigInt! # uint256
   publicFields: [String!]! # string[]
   encryptedFields: String! # string
   blockNumber: BigInt!
