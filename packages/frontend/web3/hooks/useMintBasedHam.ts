@@ -31,9 +31,11 @@ export function useMintBasedHam() {
     }) => {
       const orderFields = JSON.stringify([address, city, state, postalCode]);
 
+      const productId = BigInt(1);
+
       const encryptionKey = await contracts
         .VennDAOProducts()
-        .getEncryptionKeyByProductId(BigInt(1));
+        .getEncryptionKeyByProductId(productId);
 
       const encryptedFields = encrypt({
         publicKey: encryptionKey,
@@ -46,7 +48,7 @@ export function useMintBasedHam() {
           address: contractAddresses.DemoProject,
           abi: DemoProject,
           functionName: "mint",
-          args: [BigInt(1), JSON.stringify(encryptedFields) as Address],
+          args: [productId, JSON.stringify(encryptedFields) as Address],
           value: parseEther("0.01"),
         });
 

@@ -10,12 +10,12 @@ export const contractAddresses = {
     "DemoProject": "0x19ceccd6942ad38562ee10bafd44776ceb67e923"
   },
   "sepolia": {
-    "MockUSDC": "0x1cd2dfcf1bc591723995fc247645eee5e6a995c2",
-    "DemoProject": "0xc6472b0bad1e2b76e66f6d4cd04463b4993aae26",
-    "VennDAOVendors": "0xeae7379e1f257a92f30dbb0b7015d42aa49420b9",
-    "VennDAOTimelock": "0x1549ff8d295fd11c70463543956dfcce763a8849",
-    "VennDAOGovernor": "0xa3e4db66e0067c314b24d05ac135ba2a11dc2565",
-    "VennDAOProducts": "0xce729b6cceacb9fc0b39be122e5199ba35603c66",
-    "VennDAOOrders": "0x4262f5420ad6358817f3ec6ffc1cfed373ef8cca"
+    "MockUSDC": "0x32c154ca9d069fb9f779e379687d3ca3e046cc51",
+    "DemoProject": "0x0e37c7178d115acdfa3352f4e5ba246f2af0651a",
+    "VennDAOVendors": "0x291e234e6d21290ba4a17bd3f2fa2b63cdb7e711",
+    "VennDAOTimelock": "0x7d6a40c829e810e6093949c530266d312b35f994",
+    "VennDAOGovernor": "0x4454a0c06a3e1ff8dcd216df5f14eee7f97f95eb",
+    "VennDAOProducts": "0x508a06bfa8a359392396b448dc93d11d3186ae11",
+    "VennDAOOrders": "0xac10cd66e3ab8d4cde540029123742353ad421a7"
   }
 } as const;
