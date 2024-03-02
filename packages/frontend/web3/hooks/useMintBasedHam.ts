@@ -33,7 +33,7 @@ export function useMintBasedHam() {
 
       const encryptionKey = await contracts
         .VennDAOProducts()
-        .getEncryptionKeyByProductId(BigInt(0));
+        .getEncryptionKeyByProductId(BigInt(1));
 
       const encryptedFields = encrypt({
         publicKey: encryptionKey,
