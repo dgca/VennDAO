@@ -11,24 +11,6 @@ module.exports = {
   ],
   rules: {
     "import/no-unresolved": "off",
-    "import/order": [
-      "error",
-      {
-        groups: [
-          "builtin",
-          "external",
-          "internal",
-          ["sibling", "parent"],
-          "index",
-          "unknown",
-        ],
-        "newlines-between": "always",
-        alphabetize: {
-          order: "asc",
-          caseInsensitive: true,
-        },
-      },
-    ],
     "no-unused-vars": "off",
     "@typescript-eslint/no-unused-vars": [
       "error",
