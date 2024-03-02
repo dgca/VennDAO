@@ -1,13 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import { request } from "graphql-request";
 import { formatUnits } from "viem";
-import { useAccount } from "wagmi";
 
 import { Card, Text, Badge } from "ui-kit";
 
 import { MainLayout } from "@/components/Layouts/MainLayout";
 import { graphql } from "@/gql";
-import { useContracts } from "@/web3/WagmiContractsProvider";
 
 const query = graphql(`
   query VendorsIncludeProducts {
