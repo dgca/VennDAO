@@ -2,9 +2,7 @@
   "name": "venndao",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {
-    "nx-build": "nx build"
-  },
+  "scripts": {},
   "private": true,
   "workspaces": [
     "packages/*"

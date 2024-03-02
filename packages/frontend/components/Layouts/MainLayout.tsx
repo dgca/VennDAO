@@ -26,9 +26,9 @@ export function MainLayout({ children, includeFooter = true }: Props) {
           </Text.H3>
         </Link>
         <div className="flex gap-8">
-          <Link href="/products" className="flex items-center gap-0">
+          <Link href="/vendors" className="flex items-center gap-0">
             <Text.Large as="span" className="font-extrabold hover:underline">
-              Products
+              Vendors
             </Text.Large>
           </Link>
           <Link href="/docs" className="flex items-center gap-0">

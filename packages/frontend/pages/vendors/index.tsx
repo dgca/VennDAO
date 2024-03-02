@@ -10,7 +10,7 @@ import { graphql } from "@/gql";
 import { useContracts } from "@/web3/WagmiContractsProvider";
 
 const query = graphql(`
-  query AllProducts {
+  query VendorsIncludeProducts {
     vendors {
       name
       website
@@ -31,12 +31,12 @@ const query = graphql(`
   }
 `);
 
-export default function Products() {
+export default function Vendors() {
   const contracts = useContracts();
   const account = useAccount();
 
   const { data: ordersData } = useQuery({
-    queryKey: ["AllProducts"],
+    queryKey: ["VendorsIncludeProducts"],
     queryFn: async () => {
       const data = await request(
         "https://api.studio.thegraph.com/query/67001/venndao-sepolia/version/latest",
@@ -72,11 +72,9 @@ export default function Products() {
   return (
     <MainLayout>
       <div className="container px-4 py-12 max-w-2xl mx-auto">
-        <Text.H2 as="h1">Browse Products</Text.H2>
+        <Text.H2 as="h1">Browse Vendors</Text.H2>
         <Text.Plain as="p" className="my-4">
-          Browse a collection of products offered by the VennDAO community.
-          <br />
-          Submit orders for any of these prodcuts onchain.
+          Check out our vendors and the products they offer!
         </Text.Plain>
         {ordersData?.vendors.flatMap((vendor) => {
           return vendor.products.map(

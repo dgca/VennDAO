@@ -870,9 +870,11 @@ export type ProductsByMemberQuery = {
   }>;
 };
 
-export type AllProductsQueryVariables = Exact<{ [key: string]: never }>;
+export type VendorsIncludeProductsQueryVariables = Exact<{
+  [key: string]: never;
+}>;
 
-export type AllProductsQuery = {
+export type VendorsIncludeProductsQuery = {
   __typename?: "Query";
   vendors: Array<{
     __typename?: "Vendor";
@@ -1099,13 +1101,13 @@ export const ProductsByMemberDocument = {
   ProductsByMemberQuery,
   ProductsByMemberQueryVariables
 >;
-export const AllProductsDocument = {
+export const VendorsIncludeProductsDocument = {
   kind: "Document",
   definitions: [
     {
       kind: "OperationDefinition",
       operation: "query",
-      name: { kind: "Name", value: "AllProducts" },
+      name: { kind: "Name", value: "VendorsIncludeProducts" },
       selectionSet: {
         kind: "SelectionSet",
         selections: [
@@ -1184,4 +1186,7 @@ export const AllProductsDocument = {
       },
     },
   ],
-} as unknown as DocumentNode<AllProductsQuery, AllProductsQueryVariables>;
+} as unknown as DocumentNode<
+  VendorsIncludeProductsQuery,
+  VendorsIncludeProductsQueryVariables
+>;
