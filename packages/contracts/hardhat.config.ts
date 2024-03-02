@@ -19,6 +19,24 @@ function getNetworks() {
   }
 }
 
+function getEtherscan() {
+  if (process.env.ETHERSCAN_API_KEY) {
+    return {
+      apiKey: process.env.ETHERSCAN_API_KEY,
+      customChains: [
+        {
+          network: "sepolia",
+          chainId: 84532,
+          urls: {
+            apiURL: "https://api-sepolia.basescan.org/api",
+            browserURL: "https://sepolia.basescan.org",
+          },
+        },
+      ],
+    };
+  }
+}
+
 const config: HardhatUserConfig = {
   solidity: {
     version: "0.8.21",
@@ -32,19 +50,7 @@ const config: HardhatUserConfig = {
     },
   },
   networks: getNetworks(),
-  etherscan: {
-    apiKey: process.env.ETHERSCAN_API_KEY,
-    customChains: [
-      {
-        network: "sepolia",
-        chainId: 84532,
-        urls: {
-          apiURL: "https://api-sepolia.basescan.org/api",
-          browserURL: "https://sepolia.basescan.org",
-        },
-      },
-    ],
-  },
+  etherscan: getEtherscan(),
   paths: {
     sources: "./src",
   },
