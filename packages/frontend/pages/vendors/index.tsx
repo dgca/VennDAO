@@ -57,9 +57,9 @@ export default function Vendors() {
               <div className="flex flex-col mb-4">
                 <div className="flex gap-2 items-center">
                   <Text.Large>{vendor.name}</Text.Large>
-                  <Text.Muted>{vendor.description}</Text.Muted>
+                  <Text.Muted>{vendor.website}</Text.Muted>
                 </div>
-                <Text.Plain>{vendor.website}</Text.Plain>
+                <Text.Plain>{vendor.description}</Text.Plain>
               </div>
               {vendor.products.map((product) => (
                 <Card
