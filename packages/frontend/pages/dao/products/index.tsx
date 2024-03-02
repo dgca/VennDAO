@@ -17,7 +17,6 @@ const query = graphql(`
       name
       products {
         productId
-        productId
         active
         name
         description

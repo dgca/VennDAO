@@ -33,16 +33,19 @@ export default function DemoProject() {
         </nav>
 
         <main className="flex flex-col flex-grow">
-          <Text.H1 className="text-center">Implementation Demo</Text.H1>
+          <Text.H1 className="text-center">Based Hams 🐹</Text.H1>
+          <Text.Muted className="text-center">
+            (Not a real project, but still pretty cool)
+          </Text.Muted>
 
           <Card className="p-8 flex gap-8 mt-16 mx-auto">
             <div className="flex items-center">
               <Image height={500} width={500} alt="Ham 0" src="/ham-0.png" />
             </div>
             <div className="flex flex-col items-start">
-              <Text.H2>BasedHams</Text.H2>
+              <Text.H2>These hams are off the chain</Text.H2>
               <Text.Plain>
-                Mint your hamster NFT and get a free poster!
+                Mint a hamster and get a poster shipped to you
               </Text.Plain>
               <Form
                 className="mt-6"
@@ -78,15 +81,6 @@ export default function DemoProject() {
                   </Text.Small>
                 </div>
                 <div className="flex justify-end w-full mt-4 gap-2">
-                  <Button
-                    onClick={() => {
-                      contracts
-                        .MockUSDC()
-                        .mintTo(contractAddresses.DemoProject);
-                    }}
-                  >
-                    Feed Project
-                  </Button>
                   <Button className="bg-purple-500 mt-auto hover:bg-purple-700">
                     Mint my hamster
                   </Button>

@@ -9,8 +9,11 @@ import { getFormFields } from "@/utils/formUtils";
 import { useJoinDao } from "@/web3/hooks/useJoinDao";
 import { useMintMockTokens } from "@/web3/hooks/useMintMockTokens";
 import { useContracts } from "@/web3/WagmiContractsProvider";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
 
 export default function Join() {
+  const router = useRouter();
   const contracts = useContracts();
   const account = useAccount();
   const usdcBalance = contracts.MockUSDC().balanceOf.useRead({
@@ -22,6 +25,19 @@ export default function Join() {
 
   const joinDao = useJoinDao();
   const mintMockToens = useMintMockTokens();
+
+  const { data: balanceOfData } = contracts.VennDAOVendors().balanceOf.useRead({
+    args: [account.address!],
+    query: {
+      enabled: !!account.address,
+    },
+  });
+
+  useEffect(() => {
+    if (typeof balanceOfData === "bigint" && balanceOfData > 0) {
+      router.replace("/dao/products");
+    }
+  }, [balanceOfData, router]);
 
   return (
     <>

@@ -1059,10 +1059,6 @@ export const ProductsByMemberDocument = {
                       },
                       {
                         kind: "Field",
-                        name: { kind: "Name", value: "productId" },
-                      },
-                      {
-                        kind: "Field",
                         name: { kind: "Name", value: "active" },
                       },
                       { kind: "Field", name: { kind: "Name", value: "name" } },
@@ -1142,10 +1138,6 @@ export const VendorsIncludeProductsDocument = {
                   selectionSet: {
                     kind: "SelectionSet",
                     selections: [
-                      {
-                        kind: "Field",
-                        name: { kind: "Name", value: "productId" },
-                      },
                       {
                         kind: "Field",
                         name: { kind: "Name", value: "productId" },

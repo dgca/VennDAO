@@ -5,33 +5,6 @@ import { Text } from "ui-kit";
 
 import { MainLayout } from "@/components/Layouts/MainLayout";
 
-const codeString = `
-contract Demo {
-  IVennDAOOrders private vennDAO;
-
-  constructor(address _vennDAOAddress) {
-      vennDAO = IVennDAOOrders(_vennDAOAddress);
-  }
-
-  function _placeOrder() internal {
-      uint256 productId = 0;
-      uint256 quantity = 1;
-      address refundRecipient = msg.sender;
-      string[] memory publicFields = new string[](1);
-      publicFields[0] = "https://foo.com/cool-image.png";
-      string memory encryptedFields = "0x1234...";
-
-      vennDAO.placeOrder(
-          productId,
-          quantity,
-          refundRecipient,
-          publicFields,
-          encryptedFields
-      );
-  }
-}
-`;
-
 const Highlight = ({ code }: { code: string }) => {
   const isClient = useIsClient();
   if (!isClient) return null;
@@ -89,30 +62,74 @@ export default function Docs() {
             The <code>address</code> of the recipient of the refund
           </li>
           <li>
-            The data the vendor requires to fulfill the order. These are
-            available on the product.
+            The data the vendor requires to fulfill the order. These fields are
+            available on each product.
+            <ul className="list-disc list-outside pl-4">
+              <li>
+                <code>publicFields</code> are passed in as an array of strings.
+              </li>
+              <li>
+                <code>encryptedFields</code> must be encryped before being
+                passed in. Encryption must follow the steps seen in&nbsp;
+                <Text.Anchor
+                  href="https://github.com/dgca/VennDAO/blob/main/packages/frontend/utils/encrypt.ts"
+                  target="_blank"
+                >
+                  this function
+                </Text.Anchor>
+                .
+              </li>
+            </ul>
           </li>
         </ul>
 
-        <Highlight code={codeString} />
         <Text.P>
-          Few vendors of physical goods list their products on-chain. As a web3
-          app, if you want to deliver real world goods to your customers, you
-          typically have to build a custom integration with an existing web2
-          APIs.
+          With this information, you can then calculate the price of your order,
+          allow <code>VennDAO</code> to transfer that amount, and call{" "}
+          <code>VennDAO.placeOrder()</code>
+          with the appropriate arguments.
         </Text.P>
-        <Text.P>
-          VennDAO solves this problem by enabling any vendor to list their
-          products on chain without having to deploy their own smart contract.
-          Web3 apps can then place orders for products listed on VennDAO
-          on-chain.
-        </Text.P>
-        <Text.P>
-          Because VennDAO is a vendor-run organization, it offers vendors a
-          unique advantage over traditional web2 marketplaces. This approach
-          ensures that the interests of the vendors are at the forefront of the
-          platform&apos;s development and governance.
-        </Text.P>
+
+        <Text.P>An example of this process looks like this:</Text.P>
+
+        <Highlight
+          code={`
+contract Demo {
+  IVennDAOOrders private vennDAO;
+  IERC20 private usdcContract;
+
+  constructor(address _vennDAOAddress, address _usdcContract) {
+    vennDAO = IVennDAOOrders(_vennDAOAddress);
+    usdcContract = IERC20(_usdcContract);
+  }
+
+  function _placeOrder() internal {
+    uint256 productId = 0;
+    uint256 quantity = 1;
+    uint256 price = vennDAO.calculateOrderTotal(
+      productId,
+      quantity
+    );
+    address refundRecipient = msg.sender;
+    string[] memory publicFields = new string[](1);
+    publicFields[0] = "https://foo.com/cool-image.png";
+    string memory encryptedFields = "0x1234...";
+
+    // Approve spend of USDC
+    usdcContract.approve(address(vennDAO), price);
+
+    // Place order
+    vennDAO.placeOrder(
+      productId,
+      quantity,
+      refundRecipient,
+      publicFields,
+      encryptedFields
+    );
+  }
+}
+`}
+        />
       </div>
     </MainLayout>
   );
